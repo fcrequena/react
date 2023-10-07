@@ -2,26 +2,35 @@ import React from 'react';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
-
+import { TextField } from '@mui/material';
 function MyTitle(props) {
-    const { titulo, boton } = props;
+    const { titulo, boton, buscar } = props;
 
   return (
     <div>
         <br/>
       <Grid container  
-      direction="row"
-      justifyContent="space-between"
-      alignItems="flex-end">
-        <Grid item xs={8}>
+        direction="row"
+        justifyContent="space-between"
+        alignItems="center">
+        <Grid item xs={4}>
           <Typography variant="h4" gutterBottom>
           {titulo}
           </Typography>
         </Grid>
-        <Grid item xs={4} alignItems="tight">
-          <Button >
+        <Grid item xs={4} container
+                          direction="row"
+                          justifyContent="flex-end"
+                          alignItems="center">
             {boton}
-          </Button>
+        </Grid>
+        <Grid item xs={4}
+          container
+          direction="row"
+          justifyContent="flex-end"
+          alignItems="center">
+          
+          {buscar}
         </Grid>
       </Grid>
     </div>

@@ -5,14 +5,14 @@ import { useMutation, useQuery } from "@apollo/react-hooks";
 import { TextField, Button, Container, Stack, Alert,
             Table, TableContainer, TableHead, TableCell, TableBody, TableRow, Tab,
             Modal, Autocomplete, 
-            Accordion, AccordionSummary, AccordionDetails
+            Accordion, AccordionSummary, AccordionDetails,TablePagination
     } from "@mui/material";
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import {makeStyles} from "@mui/styles";
 import AddIcon from '@mui/icons-material/Add';
 import {Edit, Delete } from '@mui/icons-material';
 import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
-import { gql } from 'graphql-tag';
+
 import { useNavigate } from "react-router-dom";
 import MyTitle from "../components/title";
 
@@ -66,6 +66,9 @@ function PointSale(props){
     })
     const [ tipoSeleccionado, setTipoSeleccionado ] = useState(null);
     const [expandedRow, setExpandedRow] = useState(null);
+    const [filtro, setFiltro] = useState('');
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
 
     const handleChange = e => {
         const { name, value } = e.target;
@@ -359,149 +362,148 @@ function PointSale(props){
         
     )
 
+    /**FUNCION DE LA TABLA-------------------------------------------------------------- */
+    // Función para manejar la expansión/colapso de una fila
+    const handleExpandRow = (rowIndex) => {
+        if (rowIndex === expandedRow) {
+            setExpandedRow(null); // Colapsar si ya está expandida
+        } else {
+            setExpandedRow(rowIndex); // Expandir si no está expandida
+        }
+    };
+    
+    // Función para manejar cambios en el campo de búsqueda
+    const handleFiltroChange = (event) => {
+        setFiltro(event.target.value);
+    };
+    
+    // Filtrar los datos basados en el filtro de búsqueda
+    const datosFiltrados = pointSaleData.filter((dato) =>
+        dato.nombre.toLowerCase().includes(filtro.toLowerCase())
+    );
+    
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+      };
+    
+    const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+    };
+
+    /**mis BOTONES -------------------------------------------------------------------- */
     const miBoton = (
         <Button variant="contained" color="success" onClick={openCloseModalCreate}>Nuevo</Button>
       );
 
-      
-
-      // Función para manejar la expansión/colapso de una fila
-      const handleExpandRow = (rowIndex) => {
-        if (rowIndex === expandedRow) {
-          setExpandedRow(null); // Colapsar si ya está expandida
-        } else {
-          setExpandedRow(rowIndex); // Expandir si no está expandida
-        }
-      };
+    const miFiltro = (
+        <TextField label="Buscar por nombre" value={filtro} onChange={handleFiltroChange} />
+    );
 
     return (
     <ThemeProvider theme={theme}>
-        {/* <div className="App"> */}
         <div> 
         <Container spacing={4} maxWidth="md">
-        <MyTitle titulo={title} boton={miBoton}></MyTitle>
+            <MyTitle titulo={title} boton={miBoton} buscar={miFiltro}></MyTitle>
             <br/>
-            <br/>
-            {/* <TableContainer>
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>Nombre</TableCell>
-                            <TableCell>Descripción</TableCell>
-                            <TableCell>Estado</TableCell>
-                            <TableCell>Acciones</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {pointSaleData.map(console=>(
-                            <TableRow key={console.codigo}>
-                                <TableCell>{console.nombre}</TableCell>
-                                <TableCell>{console.descripcion}</TableCell>
-                                <TableCell>{console.activo == true ? "Activo" : "Inactivo"}</TableCell>
-                                <TableCell>
-                                    <Edit className="{styles.iconos}" onClick={() => seleccionarProducto(console, 'Editar')} />
-                                    &nbsp;&nbsp;&nbsp;
-                                    <Delete className="{styles.iconos}" onClick={() => seleccionarProducto(console, 'Eliminar')} />        
-                                    &nbsp;&nbsp;&nbsp;
-                                    <LibraryAddIcon className="{styles.iconos}" onClick={()=> seleccionarProducto(console, 'Agregar')}></LibraryAddIcon>
-                                </TableCell>
-                            
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer> */}
-           
-           <TableContainer>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>Nombre</TableCell>
-            <TableCell>Descripción</TableCell>
-            <TableCell>Estado</TableCell>
-            <TableCell>Productos</TableCell>
-            <TableCell>Acciones</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {pointSaleData.map((row, index) => (
-            <Fragment key={row.codigo}>
-              <TableRow>
-                <TableCell>{row.nombre}</TableCell>
-                <TableCell>{row.descripcion}</TableCell>
-                <TableCell>{row.activo == true ? "Activo" : "Inactivo"}</TableCell>
+            <TableContainer sx={{ maxHeight: 440 }}>
+            <Table>
+                <TableHead>
+                <TableRow>
+                    <TableCell>Nombre</TableCell>
+                    <TableCell>Descripción</TableCell>
+                    <TableCell>Estado</TableCell>
+                    <TableCell>Productos</TableCell>
+                    <TableCell>Acciones</TableCell>
+                </TableRow>
+                </TableHead>
+                <TableBody>
+                {datosFiltrados
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((row, index) => (
+                    <Fragment key={row.codigo}>
+                    <TableRow>
+                        <TableCell>{row.nombre}</TableCell>
+                        <TableCell>{row.descripcion}</TableCell>
+                        <TableCell>{row.activo == true ? "Activo" : "Inactivo"}</TableCell>
 
-                <TableCell>
-                  <Accordion  color="primary" variant="outlined"
-                    expanded={index === expandedRow}
-                    onChange={() => handleExpandRow(index)}
-                  >
-                    <AccordionSummary >Productos asociados</AccordionSummary>
-                    <AccordionDetails>
-                        <Table >
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell>Nombre</TableCell>
-                                    <TableCell>precio</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {row.productos.map((descripcion, descIndex) => (
-                                    <>
+                        <TableCell>
+                        <Accordion  color="primary" variant="outlined"
+                            expanded={index === expandedRow}
+                            onChange={() => handleExpandRow(index)}
+                        >
+                            <AccordionSummary >Productos asociados</AccordionSummary>
+                            <AccordionDetails>
+                                <Table >
+                                    <TableHead>
                                         <TableRow>
-                                            <TableCell>{descripcion.nombre}</TableCell>
-                                            <TableCell>{descripcion.precio}</TableCell>
+                                            <TableCell>Nombre</TableCell>
+                                            <TableCell>precio</TableCell>
                                         </TableRow>
-                                        {/* {descIndex < row.productos.length - 1 && <hr />}  */}
-                                        {/* Línea divisoria */}
-                                    </>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </AccordionDetails>
-                  </Accordion>
-                </TableCell>
-                <TableCell>
-                    <Edit className="{styles.iconos}" onClick={() => seleccionarProducto(row, 'Editar')} />
-                    &nbsp;&nbsp;&nbsp;
-                    <Delete className="{styles.iconos}" onClick={() => seleccionarProducto(row, 'Eliminar')} />        
-                    &nbsp;&nbsp;&nbsp;
-                    <LibraryAddIcon className="{styles.iconos}" onClick={()=> seleccionarProducto(row, 'Agregar')}></LibraryAddIcon>
-                </TableCell>
-              </TableRow>
-            </Fragment>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
-           
-
-
-            </Container>
+                                    </TableHead>
+                                    <TableBody>
+                                        {row.productos.map((descripcion, descIndex) => (
+                                            <>
+                                                <TableRow>
+                                                    <TableCell>{descripcion.nombre}</TableCell>
+                                                    <TableCell>{descripcion.precio}</TableCell>
+                                                </TableRow>
+                                                {/* {descIndex < row.productos.length - 1 && <hr />}  */}
+                                                {/* Línea divisoria */}
+                                            </>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </AccordionDetails>
+                        </Accordion>
+                        </TableCell>
+                        <TableCell>
+                            <Edit className="{styles.iconos}" onClick={() => seleccionarProducto(row, 'Editar')} />
+                            &nbsp;&nbsp;&nbsp;
+                            <Delete className="{styles.iconos}" onClick={() => seleccionarProducto(row, 'Eliminar')} />        
+                            &nbsp;&nbsp;&nbsp;
+                            <LibraryAddIcon className="{styles.iconos}" onClick={()=> seleccionarProducto(row, 'Agregar')}></LibraryAddIcon>
+                        </TableCell>
+                    </TableRow>
+                    </Fragment>
+                ))}
+                </TableBody>
+            </Table>
+            </TableContainer>
+            <TablePagination
+                rowsPerPageOptions={[5, 10, 25, 100]}
+                component="div"
+                count={datosFiltrados.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+            />
+        </Container>
         
-            <Modal
-                open={modalCreate}
-                onClose={openCloseModalCreate}>
-                {bodyCreate}
-            </Modal>
+        <Modal
+            open={modalCreate}
+            onClose={openCloseModalCreate}>
+            {bodyCreate}
+        </Modal>
 
-            <Modal
-                open={modalEdit}
-                onClose={openCloseModalEdit}>
-                {bodyEdit}
-            </Modal>
-    
-            <Modal
-                open={modalDelete}
-                onClose={openCloseModalDelete}>
-                {bodyDelete}
-            </Modal>
+        <Modal
+            open={modalEdit}
+            onClose={openCloseModalEdit}>
+            {bodyEdit}
+        </Modal>
 
-            <Modal
-                open={modalAdd}
-                onClose={openCloseModalAdd}>
-                {bodyAdd}
-            </Modal>
+        <Modal
+            open={modalDelete}
+            onClose={openCloseModalDelete}>
+            {bodyDelete}
+        </Modal>
+
+        <Modal
+            open={modalAdd}
+            onClose={openCloseModalAdd}>
+            {bodyAdd}
+        </Modal>
         </div>
     </ThemeProvider>
     )

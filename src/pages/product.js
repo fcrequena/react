@@ -4,7 +4,7 @@ import { useMutation, useQuery } from "@apollo/react-hooks";
 
 import { TextField, Button, Container, Stack, Alert,
             Table, TableContainer, TableHead, TableCell, TableBody, TableRow, Tab,
-            Modal, Autocomplete, Typography
+            Modal, Autocomplete,TablePagination
     } from "@mui/material";
 
 import { ThemeProvider, createTheme } from '@mui/material/styles';
@@ -62,6 +62,10 @@ function Product(props){
         tipo_producto: null
     })
     const [ tipoSeleccionado, setTipoSeleccionado ] = useState(null);
+
+    const [filtro, setFiltro] = useState('');
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
 
     const handleChange = e => {
         const { name, value } = e.target;
@@ -311,16 +315,41 @@ function Product(props){
         </div>
         
     )
+    
+    /**FUNCION DE LA TABLA-------------------------------------------------------------- */
+    // Función para manejar cambios en el campo de búsqueda
+    const handleFiltroChange = (event) => {
+        setFiltro(event.target.value);
+    };
+    
+    // Filtrar los datos basados en el filtro de búsqueda
+    const datosFiltrados = productData.filter((dato) =>
+        dato.nombre.toLowerCase().includes(filtro.toLowerCase())
+    );
+    
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+      };
+    
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(+event.target.value);
+        setPage(0);
+    };
 
+    /**mis BOTONES -------------------------------------------------------------------- */
+   
     const miBoton = (
         <Button variant="contained" color="success" onClick={openCloseModalCreate}>Nuevo</Button>
       );
 
+    const miFiltro = (
+        <TextField label="Buscar por nombre" value={filtro} onChange={handleFiltroChange} />
+    );
     return (
     <ThemeProvider theme={theme}>
         <div>
         <Container spacing={4} maxWidth="md">
-        <MyTitle titulo={title} boton={miBoton}></MyTitle>
+        <MyTitle titulo={title} boton={miBoton} buscar={miFiltro}></MyTitle>
             <br/>
             <TableContainer>
                 <Table>
@@ -333,7 +362,9 @@ function Product(props){
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {productData.map(console=>(
+                        {datosFiltrados
+                        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                        .map(console=>(
                             <TableRow key={console.codigo}>
                                 <TableCell>{console.nombre}</TableCell>
                                 <TableCell>{console.descripcion}</TableCell>
@@ -349,6 +380,15 @@ function Product(props){
                     </TableBody>
                 </Table>
             </TableContainer>
+            <TablePagination
+                rowsPerPageOptions={[5, 10, 25, 100]}
+                component="div"
+                count={productData.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+            />
             </Container>
         
             <Modal
