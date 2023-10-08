@@ -9,6 +9,7 @@ function MyTitle(props) {
   return (
     <div>
         <br/>
+        
       <Grid container  
         direction="row"
         justifyContent="space-between"
@@ -33,6 +34,7 @@ function MyTitle(props) {
           {buscar}
         </Grid>
       </Grid>
+      <hr />
     </div>
   );
 }

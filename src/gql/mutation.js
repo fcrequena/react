@@ -2,95 +2,192 @@ import { gql } from 'graphql-tag';
 
 export const CREATE_PRODUCT = gql`
     mutation mutation ($nombre: String!, $descripcion: String!, $tipo_producto: Int!){
-createProduct(
-	nombre:$nombre,
-	descripcion:$descripcion, 
-	activo:true,  
-	tipo_producto:$tipo_producto
-){codigo nombre descripcion activo tipo_producto}}`
+	createProduct(
+		nombre:$nombre,
+		descripcion:$descripcion, 
+		activo:true,  
+		tipo_producto:$tipo_producto
+	){codigo nombre descripcion activo tipo_producto}}`
 
 export const EDIT_PRODUCT = gql`
     mutation mutation ($codigo: Int!, $nombre: String!, $descripcion: String!, $tipo_producto: Int!){
-updateProduct(
-    codigo: $codigo,
-	nombre: $nombre,
-	descripcion: $descripcion, 
-	activo: true,  
-	tipo_producto: $tipo_producto
-){codigo nombre descripcion activo tipo_producto}}`
+	updateProduct(
+		codigo: $codigo,
+		nombre: $nombre,
+		descripcion: $descripcion, 
+		activo: true,  
+		tipo_producto: $tipo_producto
+	){codigo nombre descripcion activo tipo_producto}}`
 
 export const DELETE_PRODUCT = gql`
     mutation mutation ($codigo: Int!){
-deleteProductById(
-    codigo: $codigo
-){codigo nombre descripcion activo tipo_producto}}`
+	deleteProductById(
+		codigo: $codigo
+	){codigo nombre descripcion activo tipo_producto}}`
 
 
 export const CREATE_TYPE_PRODUCT = gql`
     mutation mutation ($nombre: String!, $descripcion: String!){
-createTypeProduct(
-	nombre:$nombre,
-	descripcion:$descripcion, 
-	activo:true,  
-	es_producto: true
-){codigo nombre descripcion activo es_producto }}`
+	createTypeProduct(
+		nombre:$nombre,
+		descripcion:$descripcion, 
+		activo:true,  
+		es_producto: true
+	){codigo nombre descripcion activo es_producto }}`
 
 export const EDIT_TYPE_PRODUCT = gql`
     mutation mutation ($codigo: Int!, $nombre: String!, $descripcion: String!){
-updateTypeProduct(
-	codigo: $codigo
-	nombre: $nombre
-	descripcion:$descripcion, 
-	activo:true,  
-	es_producto: true
-){codigo nombre descripcion activo es_producto }}`
+	updateTypeProduct(
+		codigo: $codigo
+		nombre: $nombre
+		descripcion:$descripcion, 
+		activo:true,  
+		es_producto: true
+	){codigo nombre descripcion activo es_producto }}`
 
 export const DELETE_TYPE_PRODUCT = gql`
     mutation mutation ($codigo: Int!){
-        deleteTypeProductById(codigo: $codigo){
-	codigo
-	nombre
-	descripcion
-	activo
-	es_producto	 
-}}`
+	deleteTypeProductById(codigo: $codigo){
+		codigo
+		nombre
+		descripcion
+		activo
+		es_producto	 
+	}}`
 
 
 export const CREATE_POINT_SALE = gql`
     mutation mutation ($nombre: String!, $descripcion: String!){
-createPointSale(
-	nombre:$nombre,
-	descripcion:$descripcion, 
-	activo:true,
-    cantidad: 1
-){codigo nombre descripcion activo
-	productos{codigo nombre descripcion precio}
-}}`
+	createPointSale(
+		nombre:$nombre,
+		descripcion:$descripcion, 
+		activo:true,
+		cantidad: 1
+	){codigo nombre descripcion activo
+		productos{codigo nombre descripcion precio}
+	}}`
 
 export const EDIT_POINT_SALE = gql`
     mutation mutation ($codigo: Int!, $nombre: String!, $descripcion: String!){
-updatePointSale(
-    codigo: $codigo,
-	nombre: $nombre,
-	descripcion: $descripcion, 
-	activo: true,  
-    cantidad: 1
-){codigo nombre descripcion activo
-	productos{codigo nombre descripcion precio}
-}}`
+	updatePointSale(
+		codigo: $codigo,
+		nombre: $nombre,
+		descripcion: $descripcion, 
+		activo: true,  
+		cantidad: 1
+	){codigo nombre descripcion activo
+		productos{codigo nombre descripcion precio}
+	}}`
 
 export const DELETE_POINT_SALE = gql`
     mutation mutation ($codigo: Int!){
-deletePointSaleById(
-    codigo: $codigo
-){codigo nombre descripcion activo}}`
+	deletePointSaleById(
+		codigo: $codigo
+	){codigo nombre descripcion activo}}`
 
 export const CREATE_POINT_PRODUCTO = gql`
-mutation mutation ($codigo_producto: Int!, $codigo_punto_venta: Int!, $precio: Float!){
-	createProductPointSale(producto: $codigo_producto,
-							punto_venta:$codigo_punto_venta,
-							precio: $precio,
-							activo: true){
-		codigo producto punto_venta precio
+	mutation mutation ($codigo_producto: Int!, $codigo_punto_venta: Int!, $precio: Float!){
+		createProductPointSale(producto: $codigo_producto,
+								punto_venta:$codigo_punto_venta,
+								precio: $precio,
+								activo: true){
+			codigo producto punto_venta precio
+		}
+	}`
+export const CREATE_USER = gql`
+	mutation user(
+		$nombre: String!, 
+		$correo: String!,
+		$contrasena: String!, 
+		$rol: Int!
+	){
+		createUser( nombre: $nombre, 	
+					correo: $correo,
+					contrasena: $contrasena, 
+					rol: $rol 
+		){
+			codigo
+			nombre
+			correo
+			activo
+		},	
 	}
+`
+
+export const UPDATE_USER = gql`
+	mutation user(
+		$codigo: Int!,
+		$nombre: String!, 
+		$correo: String!,
+		$rol: Int!
+	){
+	updateUser( codigo: $codigo 
+							nombre: $nombre, 	
+							correo: $correo,  
+							estado: true,
+						rol: $rol  
+	){
+		codigo
+		nombre
+		correo
+		activo
+	}
+	}
+`
+export const DELETE_USER = gql`
+	mutation user(
+			$codigo: Int!
+	){
+		deleteUser(codigo: $codigo){
+			codigo 
+			nombre 
+			correo 
+			activo 
+		}
+	}
+`
+
+export const UPDATE_PASSWORD = gql`
+mutation user(
+		$codigo: Int!,
+		$contrasena: String!,
+	$valcontrasena:String!
+){
+	updatePasswordUser(
+			codigo: $codigo, 
+		contrasena: $contrasena,  
+		valcontrasena: $valcontrasena)
+	{
+		codigo 
+		nombre
+		 correo
+		activo
+	}
+}`
+
+export const CREATE_POINT_SALE_USER = gql`
+mutation user(
+		$codigo: Int!,
+		$puntos_venta: [String!]!
+){
+	createPointSaleUser(
+		codigo: $codigo, 
+		puntos_venta:$puntos_venta
+	){
+		codigo 
+		nombre
+		descripcion
+		activo
+		cantidad}
+}`
+
+export const GET_POINT_SALE_USER = gql`
+mutation PointSaleForUser ($codigo: Int!){
+	getPointSaleById(codigo: $codigo){
+		codigo
+	 nombre
+	 descripcion
+	 activo
+	  }
+
 }`

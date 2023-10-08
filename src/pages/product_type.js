@@ -18,32 +18,12 @@ import { useNavigate } from "react-router-dom";
 import { GET_ALL_PRODUCT, GET_ALL_TYPE_PRODUCT, GET_PRODUCT_BYID } from "../gql/query";
 import {CREATE_TYPE_PRODUCT, EDIT_TYPE_PRODUCT, DELETE_TYPE_PRODUCT } from '../gql/mutation'
 import MyTitle from "../components/title";
-
+import { styleModal } from "../components/modal";
 /* CONSULTAS DE GRAPHQL */
 const theme = createTheme();
 
 /* ESTILOS MODAL */
-const useStyles = makeStyles((theme) => ({
-    modal: {
-      position: 'absolute',
-      width: 400,
-      backgroundColor: '#ffffff',
-      border: '2px solid #000',
-      boxShadow: '15px 15px #888888',
-      padding: '15px 20px 25px 15px',
-      top: '50%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)'
-    },
-    iconos:{
-        cursor: 'pointer'
-    },
-    inputMaterial:{
-        padding: '2px',
-        width:'100%'
-    }
-}));
-
+const useStyles = makeStyles((theme) => (styleModal));
 
 function TypeProduct(props){
 
@@ -128,7 +108,7 @@ function TypeProduct(props){
         onCompleted: (data) => {
             var newData = [...typeProductData];
             var editado = data.updateTypeProduct;
-            console.log(newData)
+
                     newData.map(array => { 
                         
                         if( array.codigo !== editado.codigo ){
@@ -155,7 +135,7 @@ function TypeProduct(props){
         },
         variables: {codigo: productoSeleccionado.codigo} ,
         onCompleted: (data) => {
-            console.log(data);
+
                 var newData = [...typeProductData];
                 var editado = data.deleteTypeProductById;
                     newData.map(array => { 
@@ -215,7 +195,7 @@ function TypeProduct(props){
         getOptionLabel: (option) => option.nombre,
     };
     const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
-console.log(productoSeleccionado)
+
     const bodyCreate=(
         <div className={classes.modal}>
             <h3>Crear {title}</h3>
@@ -236,8 +216,10 @@ console.log(productoSeleccionado)
             /> */}
             <br/>
             <div align="right">
-                <Button onClick={funCreateTypeProducto} color="primary">Crear</Button>
-                <Button onClick={openCloseModalCreate}>Cerrar</Button>
+                <Stack direction="row" spacing={2} justifyContent="flex-end">
+                    <Button variant="contained" onClick={openCloseModalCreate} color="error">Cerrar</Button>
+                    <Button variant="contained" onClick={funCreateTypeProducto} color="primary">Crear</Button>
+                </Stack>
                 {errors?.map(function(error){
                 return(
                     <Alert severity="error">
@@ -259,8 +241,10 @@ console.log(productoSeleccionado)
             <br/>
             <br/>
             <div align="right">
-                <Button onClick={funEditTypeProducto} color="primary">Editar</Button>
-                <Button onClick={openCloseModalEdit}>Cerrar</Button>
+                <Stack direction="row" spacing={2} justifyContent="flex-end">
+                    <Button variant="contained" onClick={openCloseModalEdit} color="error">Cerrar</Button>
+                    <Button variant="contained" onClick={funEditTypeProducto} color="primary">Editar</Button>
+                </Stack>
                 {errors?.map(function(error){
                 return(
                     <Alert severity="error">
@@ -278,8 +262,10 @@ console.log(productoSeleccionado)
             <h3>Eliminar {title}</h3>
             <p>Está seguro de Eliminar este producto {productoSeleccionado && productoSeleccionado.nombre}?</p>
             <div align="right">
-                <Button onClick={funDeleteTypeProducto} color="primary">Sí</Button>
-                <Button onClick={openCloseModalDelete}>No</Button>
+                <Stack direction="row" spacing={2} justifyContent="flex-end">
+                    <Button variant="contained" onClick={funDeleteTypeProducto} color="primary">Sí</Button>
+                    <Button variant="contained" onClick={openCloseModalDelete}>No</Button>
+                </Stack>
                 {errors?.map(function(error){
                 return(
                     <Alert severity="error">
@@ -328,7 +314,7 @@ console.log(productoSeleccionado)
         {/* <div className="App"> */}
         <div>
         <Container spacing={4} maxWidth="md">
-        <MyTitle titulo={title} boton={miBoton} buscar={miFiltro}></MyTitle> 
+        <MyTitle titulo={title} boton={miBoton} buscar={miFiltro}   ></MyTitle> 
             <br/>
             <TableContainer>
                 <Table>

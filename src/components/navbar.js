@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { AppBar, Box, Toolbar, Typography, Button } from "@mui/material";
+import { AppBar, Box, Toolbar, Typography, Button, Tooltip } from "@mui/material";
 import {MenuItem, Menu} from '@mui/material';
 
 import { Link, useNavigate } from "react-router-dom";
-
+import FaceIcon from '@mui/icons-material/Face';
 import {AuthContext } from '../context/authContext'
 import { useContext } from "react";
 
@@ -26,7 +26,7 @@ function NavBar() {
       setAnchorEl(null);
     };
 
-console.log({user})
+// console.log({user})
     return (
         <Box sx={{ flexGrow: 1}}>
             <AppBar position="static">
@@ -61,6 +61,7 @@ console.log({user})
                             <MenuItem onClick={handleClose}><Link to="/Product" style={{textDecoration: "none"}}> Productos </Link></MenuItem>
                             <MenuItem onClick={handleClose}><Link to="/TypeProduct" style={{textDecoration: "none"}}> Tipo de Productos </Link></MenuItem>
                             <MenuItem onClick={handleClose}><Link to="/PointSale" style={{textDecoration: "none"}}> Punto de Venta </Link></MenuItem>
+                            <MenuItem onClick={handleClose}><Link to="/User" style={{textDecoration: "none"}}> Usuarios </Link></MenuItem>
                         
                         </Menu>
                         
@@ -80,8 +81,11 @@ console.log({user})
                             </>
                             :
                             <>
-                                <Link to="/login" style={{textDecoration: "none", color:"white", marginRight: "10px"}}>Login </Link>
-                                <Link to="/register" style={{textDecoration: "none", color:"white", marginRight: "10px"}}>Registro </Link>
+                            <Link to="/login" style={{textDecoration: "none", color:"white", marginRight: "10px"}}> 
+                                <Tooltip title="Inicio de sesión">
+                                    <FaceIcon fontSize="large" /> 
+                                </Tooltip>
+                            </Link>
                             </>
                         }
                         

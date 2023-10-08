@@ -53,7 +53,7 @@ function Login(props){
     });
 
     return (
-        <Container spacing={2} maxWidth="sm">
+        <Container spacing={3} maxWidth="sm" >
             <h3>Inicio de sesión</h3>
             <p>Bienvenido</p>
             <Stack spacing={2} padding={2}>
@@ -69,6 +69,7 @@ function Login(props){
                     onChange={onChange}
                 />
             </Stack>
+            <Button variant="contained" color="success" onClick={onSubmit}>Inicio de sesión</Button>
             
             {errors.map(function(error){
                 return(
@@ -77,7 +78,6 @@ function Login(props){
                     </Alert>
                 )
             })}
-            <Button variant="contained" color="success" onClick={onSubmit}>Inicio de sesión</Button>
         </Container>
     )
 

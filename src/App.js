@@ -10,6 +10,8 @@ import User from './pages/user';
 import Product from './pages/product';
 import TypeProduct from './pages/product_type';
 import PointSale from './pages/point_sale';
+
+
 function App() {
   return (
     <div>
@@ -22,6 +24,7 @@ function App() {
         <Route path='/product' element={<Product />} />
         <Route path='/typeproduct' element={<TypeProduct />} />
         <Route path='/pointsale' element={<PointSale />} />
+        <Route path='/user' element={<User />} />
 
 
       </Routes>

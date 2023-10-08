@@ -11,37 +11,19 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import {makeStyles} from "@mui/styles";
 import {Edit, Delete, CheckBox } from '@mui/icons-material';
 
-import { gql } from 'graphql-tag';
-import { createRoutesFromChildren, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { CREATE_PRODUCT, EDIT_PRODUCT, DELETE_PRODUCT } from "../gql/mutation";
 import { GET_ALL_PRODUCT, GET_ALL_TYPE_PRODUCT, GET_PRODUCT_BYID } from "../gql/query";
 
 import MyTitle from "../components/title";
+import { styleModal } from "../components/modal";
 /* CONSULTAS DE GRAPHQL */
 const theme = createTheme();
 
 
 /* ESTILOS MODAL */
-const useStyles = makeStyles((theme) => ({
-    modal: {
-      position: 'absolute',
-      width: 400,
-      backgroundColor: '#ffffff',
-      border: '2px solid #000',
-      boxShadow: '15px 15px #888888',
-      padding: '15px 20px 25px 15px',
-      top: '50%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)'
-    },
-    iconos:{
-        cursor: 'pointer'
-    },
-    inputMaterial:{       
-        width:'100%'
-    }
-}));
+const useStyles = makeStyles((theme) => (styleModal));
 
 
 function Product(props){
@@ -149,7 +131,7 @@ function Product(props){
         },
         variables: {codigo: productoSeleccionado.codigo} ,
         onCompleted: (data) => {
-            console.log(data);
+
                 var newData = [...productData];
                 var editado = data.deleteProductById;
                     newData.map(array => { 
@@ -239,8 +221,10 @@ function Product(props){
             <br/>
             <br/>
             <div align="right">
-                <Button onClick={funCreateProducto} color="primary">Crear</Button>
-                <Button onClick={openCloseModalCreate}>Cerrar</Button>
+                <Stack direction="row" spacing={2} justifyContent="flex-end">
+                    <Button variant="contained" onClick={openCloseModalCreate} color="error">Cerrar</Button>
+                    <Button variant="contained" onClick={funCreateProducto} color="primary">Crear</Button>
+                </Stack>
 
                 {errors?.map(function(error){
                 return(
@@ -283,8 +267,10 @@ function Product(props){
             <br/>
             <br/>
             <div align="right">
-                <Button onClick={funEditProducto} color="primary">Editar</Button>
-                <Button onClick={openCloseModalEdit}>Cerrar</Button>
+                <Stack direction="row" spacing={2} justifyContent="flex-end">
+                    <Button variant="contained" onClick={openCloseModalEdit} color="error">Cerrar</Button>
+                    <Button variant="contained" onClick={funEditProducto} color="primary">Editar</Button>
+                </Stack>
                 {errors?.map(function(error){
                 return(
                     <Alert severity="error">
@@ -302,8 +288,10 @@ function Product(props){
             <h3>Eliminar {title}</h3>
             <p>Está seguro de Eliminar este {title} " {productoSeleccionado && productoSeleccionado.nombre} "?</p>
             <div align="right">
-                <Button onClick={funDeleteProducto} color="primary">Sí</Button>
-                <Button onClick={openCloseModalDelete}>No</Button>
+                <Stack direction="row" spacing={2} justifyContent="flex-end">
+                    <Button variant="contained" onClick={openCloseModalDelete}>No</Button>
+                    <Button variant="contained" onClick={funDeleteProducto} color="primary">Sí</Button>
+                </Stack>
                 {errors?.map(function(error){
                 return(
                     <Alert severity="error">
