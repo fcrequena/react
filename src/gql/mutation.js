@@ -181,6 +181,17 @@ mutation user(
 		cantidad}
 }`
 
+export const CREATE_ROL_USER = gql`
+mutation user(
+		$codigo: Int!,
+		$roles: [String!]!
+){
+	createRolUser(codigo: $codigo, roles: $roles){codigo
+	 nombre
+		activo
+	}
+}`
+
 export const GET_POINT_SALE_USER = gql`
 mutation PointSaleForUser ($codigo: Int!){
 	getPointSaleById(codigo: $codigo){

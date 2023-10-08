@@ -35,7 +35,20 @@ query AllUser{
             descripcion
             activo
         }
+        roles{
+            codigo
+            nombre
+            activo
+        }
     }
 }
 `
 
+export const GET_ALL_TYPE_ROL =gql`
+query PointSaleForUser {
+	getAllTypeRol{
+		codigo
+		nombre
+		activo
+	}
+}`

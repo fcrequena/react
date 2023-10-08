@@ -13,11 +13,12 @@ import {makeStyles} from "@mui/styles";
 import {Edit, Delete } from '@mui/icons-material';
 import PasswordIcon from '@mui/icons-material/Password';
 import StorefrontIcon from '@mui/icons-material/Storefront';
-
+import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 import { useNavigate, useParams } from "react-router-dom";
 
-import { GET_ALL_USER, GET_ALL_POINT_SALE } from "../gql/query";
-import { CREATE_USER, UPDATE_USER, DELETE_USER, UPDATE_PASSWORD, CREATE_POINT_SALE_USER, GET_POINT_SALE_USER } from '../gql/mutation'
+import { GET_ALL_USER, GET_ALL_POINT_SALE, GET_ALL_TYPE_ROL} from "../gql/query";
+import { CREATE_USER, UPDATE_USER, DELETE_USER, UPDATE_PASSWORD, 
+        CREATE_POINT_SALE_USER, CREATE_ROL_USER } from '../gql/mutation'
 import MyTitle from "../components/title";
 import { styleModal } from "../components/modal";
 import MultipleSelectChip from "../components/selectMultiple";
@@ -40,12 +41,17 @@ function User(props){
     const [ productData, setProductData ] = useState([]);
     const [ typeProductData, setTypeProductData ] = useState([]);
     const [ pointSaleData, setPointSaleData ] = useState([]);
+    const [ typeRolData, setTypeRolData ] = useState([]);
     const [ modalCreate, setModalCreate ] = useState(false);
     const [ modalEdit, setModalEdit ] = useState(false);
     const [ modalDelete, setModalDelete ] = useState(false);
     const [ modalUpdatePassword, setModalUpdatePassword ] = useState(false);
     const [ modalPointSale, setModalPointSale ] = useState(false);
+    const [ modalTypeRol, setModalTypeRol ] = useState(false);
+
     const [ pointSaleSelected, setPointSaleSelected ] = useState([]);
+    const [ typeRolSelected, setTypeRolSelected ] = useState([]);
+
 
 
     const [ productoSeleccionado, setProductoSeleccionado ] = useState({
@@ -86,7 +92,12 @@ function User(props){
         }
     });
 
-    
+    const {loadingTypeRol, errorTypeRol, dataTypeRol} = useQuery(GET_ALL_TYPE_ROL,{
+        onCompleted: (queryData) =>{
+            const productArray = queryData.getAllTypeRol;
+            setTypeRolData(productArray);
+        }
+    });
 
     //Mutaciones ------------------------------------------------------------------------
     const funCreateTypeProducto = () => createTypeProducto();
@@ -219,6 +230,42 @@ function User(props){
         }
     })
 
+    const funCreateTypeRolUser = () => createRolUser();
+
+    const [ createRolUser, { createRolUserLoading } ] = useMutation(CREATE_ROL_USER, {
+        onError({graphQLErrors}){
+            setErrors(graphQLErrors);
+        },
+        variables: {
+            codigo: productoSeleccionado.codigo,
+            roles: typeRolSelected
+        },
+        onCompleted: (data) => {
+            var resultado = data.createRolUser;
+        
+            var usuario = [{
+                codigo: productoSeleccionado.codigo,
+                nombre: productoSeleccionado.nombre,
+                correo: productoSeleccionado.correo,
+                activo: productoSeleccionado.activo,
+                punto_venta: productoSeleccionado.punto_venta,
+                roles: resultado
+            }]
+            var newData = [...typeProductData]
+            
+            newData.map(array => { 
+                if( array.codigo !== productoSeleccionado.codigo ){
+                    return array;
+                }
+            })
+            
+            var indiceAEliminar = newData.findIndex((valor) => valor.codigo === productoSeleccionado.codigo)
+            const nuevoArray = [...newData.slice(0, indiceAEliminar), ...newData.slice(indiceAEliminar + 1)];
+            setTypeProductData(nuevoArray.concat(usuario));
+            openCloseModalTypeRol();
+        }
+    })
+
     if (loading) return null;
     if (error) {
         let isArray = Array.isArray(error);
@@ -252,8 +299,12 @@ function User(props){
 
     const openCloseModalPointSale=()=>{
         setErrors([]);
-
         setModalPointSale(!modalPointSale);
+    }
+
+    const openCloseModalTypeRol=()=>{
+        setErrors([]);
+        setModalTypeRol(!modalTypeRol);
     }
 
     const seleccionarProducto=(producto, caso)=>{
@@ -270,6 +321,8 @@ function User(props){
             setModalUpdatePassword(true);
         } else if (caso == 'acceso_puntoventa'){
             setModalPointSale(true);
+        } else if (caso == 'acceso_rol'){
+            setModalTypeRol(true);
         }
     }
 
@@ -380,6 +433,10 @@ function User(props){
         setPointSaleSelected(nuevoValor);
     };
 
+    const handleTypeRolChange = (nuevoValor) => {
+        setTypeRolSelected(nuevoValor);
+    };
+
     const bodyPointSale=(
         <div className={classes.modal}>
             <h3>Agregar accesos a {productoSeleccionado.nombre}</h3>
@@ -393,6 +450,32 @@ function User(props){
             <Stack direction="row" spacing={2} justifyContent="flex-end">
                 <Button onClick={openCloseModalPointSale} variant="contained" color="error">Cerrar</Button>
                 <Button onClick={funCreatePointSaleUser} variant="contained" color="primary">Agregar</Button>
+            </Stack>
+
+            {errors?.map(function(error){
+                return(
+                    <Alert severity="error">
+                        {error}
+                    </Alert>
+                )
+            })}
+            </div>
+        </div>
+    )
+
+    const bodyTypeRol=(
+        <div className={classes.modal}>
+            <h3>Agregar roles a {productoSeleccionado.nombre}</h3>
+            <Alert severity="info">En esta ventana agrega los roles al usuario. Esto indicara que acciones podra realizar el usuario.</Alert>
+            <br/>
+            <MultipleSelectChip datos={typeRolData} onChange={handleTypeRolChange} seleccionados={productoSeleccionado.roles}></MultipleSelectChip>
+            <br/>
+            {/* <misPuntosVentaPorUsuario codigo={productoSeleccionado.codigo}></misPuntosVentaPorUsuario> */}
+            <br/>
+            <div align="right">
+            <Stack direction="row" spacing={2} justifyContent="flex-end">
+                <Button onClick={openCloseModalTypeRol} variant="contained" color="error">Cerrar</Button>
+                <Button onClick={funCreateTypeRolUser} variant="contained" color="primary">Agregar</Button>
             </Stack>
 
             {errors?.map(function(error){
@@ -479,6 +562,10 @@ function User(props){
                                     <Tooltip title="Agregar acceso a punto de venta">
                                         <StorefrontIcon className="{styles.iconos}" onClick={() => seleccionarProducto(console, 'acceso_puntoventa')}/>     
                                     </Tooltip>
+                                    &nbsp;&nbsp;&nbsp;
+                                    <Tooltip title="Agregar roles">
+                                        <SupervisorAccountIcon className="{styles.iconos}" onClick={() => seleccionarProducto(console, 'acceso_rol')}/>
+                                    </Tooltip>
                                 </TableCell>
                             
                             </TableRow>
@@ -525,6 +612,13 @@ function User(props){
                 onClose={openCloseModalPointSale}>
                 {bodyPointSale}
             </Modal>
+
+            <Modal
+                open={modalTypeRol}
+                onClose={openCloseModalTypeRol}>
+                {bodyTypeRol}
+            </Modal>
+
         </div>
     </ThemeProvider>
     )

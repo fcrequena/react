@@ -36,10 +36,8 @@ export default function MultipleSelectChip(props) {
 
   const theme = useTheme();
   const [personName, setPersonName] = React.useState([]);
-  const [ pointSalePerUserSelected, setPointSalePerUserSelected ] = React.useState([]);
-  const [ errors, setErrors] = React.useState([]);
-
-    var nombres = [];
+ 
+  var nombres = [];
 
     seleccionados?.map((valor) => {
         nombres.push(valor.nombre)
@@ -65,14 +63,14 @@ export default function MultipleSelectChip(props) {
   return (
     <div>
       <FormControl sx={{ m: 1, width: 390 }}>
-        <InputLabel id="demo-multiple-chip-label">Puntos de venta</InputLabel>
+        <InputLabel id="demo-multiple-chip-label">Seleccione una o varias opción</InputLabel>
         <Select
           labelId="demo-multiple-chip-label"
           id="demo-multiple-chip"
           multiple
           value={personName}
           onChange={handleChange}
-          input={<OutlinedInput id="select-multiple-chip" label="Puntos de venta" />}
+          input={<OutlinedInput id="select-multiple-chip" label="Seleccione una o varias opción" />}
           renderValue={(selected) => (
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
               {selected.map((value) => (
