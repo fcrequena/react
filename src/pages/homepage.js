@@ -19,7 +19,7 @@ function Homepage(){
                     </>
                     :
                     <>
-                        <p>Inicia sesión</p>
+                        <p>Por favor inicie sesión para ingresar al sistema</p>
                     </>
                 }                    
                 </Stack>

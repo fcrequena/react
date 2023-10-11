@@ -1,11 +1,13 @@
 import * as React from 'react';
-import { AppBar, Box, Toolbar, Typography, Button, Tooltip } from "@mui/material";
+import { AppBar, Box, Toolbar, Typography, Button, Tooltip, Divider, Avatar, IconButton, Stack, BottomNavigation, BottomNavigationAction } from "@mui/material";
 import {MenuItem, Menu} from '@mui/material';
 
 import { Link, useNavigate } from "react-router-dom";
 import FaceIcon from '@mui/icons-material/Face';
 import {AuthContext } from '../context/authContext'
 import { useContext } from "react";
+
+import ResponsiveDrawer from './drawer';
 
 function NavBar() {
     let navigate = useNavigate();
@@ -31,14 +33,20 @@ function NavBar() {
         <Box sx={{ flexGrow: 1}}>
             <AppBar position="static">
                 <Toolbar>
-                    <Typography variant="h5" component="div">
-                        <Link to="/" style={{textDecoration: "none", color:"white"}}>Y-APP </Link>
-                    </Typography>
-                    <Box alignItems="right" sx={{flexGrow: 1, textAlign: "Left", marginLeft: "10px"}}>
+
                     { 
                     user ? 
                     <>
-                    <div>
+                    
+                    <Box sx={{display: 'flex', alignItems:'center', textAlign:'center'}}>
+                        <Typography sx={{minWidth: 100}} variant="h5" component="div">
+                            <Link to="/" style={{textDecoration: "none", color:"white"}}>Y-APP </Link>
+                        </Typography>
+                        <Typography sx={{minWidth: 100}} variant="button" component="div">
+                            <Link to="/Diary" style={{textDecoration: "none", color:"white"}}>Registro </Link>
+                        </Typography>
+                    </Box>
+                    <Box alignItems="right" sx={{ display:'flex', flexGrow: 1, textAlign: "Left", marginLeft: "10px"}}>   
                         <Button
                             style={{textDecoration: "none", color:"white"}}
                             id="basic-button"
@@ -46,7 +54,7 @@ function NavBar() {
                             aria-haspopup="true"
                             aria-expanded={open ? 'true' : undefined}
                             onClick={handleClick}
-                        >
+                            >
                             Menu
                         </Button>
                         <Menu
@@ -56,39 +64,35 @@ function NavBar() {
                             onClose={handleClose}
                             MenuListProps={{
                             'aria-labelledby': 'basic-button',
-                            }}
+                        }}
                         >
                             <MenuItem onClick={handleClose}><Link to="/Product" style={{textDecoration: "none"}}> Productos </Link></MenuItem>
                             <MenuItem onClick={handleClose}><Link to="/TypeProduct" style={{textDecoration: "none"}}> Tipo de Productos </Link></MenuItem>
                             <MenuItem onClick={handleClose}><Link to="/PointSale" style={{textDecoration: "none"}}> Punto de Venta </Link></MenuItem>
                             <MenuItem onClick={handleClose}><Link to="/User" style={{textDecoration: "none"}}> Usuarios </Link></MenuItem>
-                        
+                            <Divider />
+                            <MenuItem onClick={handleClose}>
+                                Reportes
+                            </MenuItem>
                         </Menu>
-                        
-                    </div>
+                    </Box>
                     </>
                     :<><div></div></>
                     }
-                        {/* <Link to="/User" style={{textDecoration: "none", color:"white"}}> Usuarios </Link> */}
-                        {/* <Link to="/Product" style={{textDecoration: "none", color:"white"}}> Productos </Link>
-                        <Link to="/TypeProduct" style={{textDecoration: "none", color:"white"}}> Tipo de Productos </Link> */}
-                    </Box>
                     <Box alignItems="right" sx={{flexGrow: 1, textAlign: "right"}}>
-                        {
-                            user ? 
-                            <>
-                            <Button style={{textDecoration: "none", color:"white"}} onClick={onLogout}>Salir</Button>
-                            </>
-                            :
-                            <>
-                            <Link to="/login" style={{textDecoration: "none", color:"white", marginRight: "10px"}}> 
-                                <Tooltip title="Inicio de sesión">
-                                    <FaceIcon fontSize="large" /> 
-                                </Tooltip>
-                            </Link>
-                            </>
+                        {user ? 
+                        <>
+                        <Button style={{textDecoration: "none", color:"white"}} onClick={onLogout}>Salir</Button>
+                        </>
+                        :
+                        <>
+                        <Link to="/login" style={{textDecoration: "none", color:"white", marginRight: "10px"}}> 
+                            <Tooltip title="Inicio de sesión">
+                                <FaceIcon fontSize="large" /> 
+                            </Tooltip>
+                        </Link>
+                        </>
                         }
-                        
                     </Box>
                 </Toolbar>
             </AppBar>

@@ -193,12 +193,20 @@ mutation user(
 }`
 
 export const GET_POINT_SALE_USER = gql`
-mutation PointSaleForUser ($codigo: Int!){
+mutation PointSaleForUser ($codigo: Int!){	
 	getPointSaleById(codigo: $codigo){
 		codigo
-	 nombre
-	 descripcion
-	 activo
-	  }
-
+		nombre
+		activo
+		cantidad		 
+		descripcion
+		 productos{
+			 codigo_punto_venta
+			 codigo
+			nombre
+			 descripcion
+			 precio
+			 activo
+		}
+	}
 }`

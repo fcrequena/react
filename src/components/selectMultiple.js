@@ -58,7 +58,9 @@ export default function MultipleSelectChip(props) {
         );
     };
 
-  onChange(personName)
+    React.useEffect(()=>{
+      onChange(personName)
+    })
 
   return (
     <div>

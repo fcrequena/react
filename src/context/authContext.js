@@ -13,6 +13,7 @@ if(localStorage.getItem("token")){
     if(decodeToken.exp * 1000 < Date.now()){
         localStorage.removeItem("token");
     }else{
+        console.log({decodeToken})
         initialState.user = decodeToken;
     }
 }
@@ -44,7 +45,6 @@ function AuthProvider(props) {
     const [state, dispatch] = useReducer(authReducer, initialState);
 
     const login = (userData) =>{
-        // console.log({pancho: userData})
         localStorage.setItem("token", userData.token);
 
         dispatch({
@@ -61,7 +61,7 @@ function AuthProvider(props) {
 
     return (
         <AuthContext.Provider 
-            value={{user: state.user, login, logout}}
+            value={{user: state.user, login, logout, codigo: state.codigo}}
             {...props}
         />
     )

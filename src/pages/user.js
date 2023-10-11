@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {AuthContext } from '../context/authContext'
 
 import { useMutation, useQuery } from "@apollo/react-hooks";
@@ -430,9 +430,9 @@ function User(props){
     )
 
     const handlePointSaleChange = (nuevoValor) => {
-        setPointSaleSelected(nuevoValor);
+            setPointSaleSelected(nuevoValor);
     };
-
+    
     const handleTypeRolChange = (nuevoValor) => {
         setTypeRolSelected(nuevoValor);
     };

@@ -10,7 +10,7 @@ import User from './pages/user';
 import Product from './pages/product';
 import TypeProduct from './pages/product_type';
 import PointSale from './pages/point_sale';
-
+import Diary from './pages/diary';
 
 function App() {
   return (
@@ -25,8 +25,7 @@ function App() {
         <Route path='/typeproduct' element={<TypeProduct />} />
         <Route path='/pointsale' element={<PointSale />} />
         <Route path='/user' element={<User />} />
-
-
+        <Route path='/diary' element={<Diary/>} />
       </Routes>
     </div>
   );

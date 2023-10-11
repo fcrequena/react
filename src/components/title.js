@@ -14,7 +14,7 @@ function MyTitle(props) {
         direction="row"
         justifyContent="space-between"
         alignItems="center">
-        <Grid item xs={4}>
+        <Grid item xs={6}>
           <Typography variant="h4" gutterBottom>
           {titulo}
           </Typography>
@@ -23,7 +23,7 @@ function MyTitle(props) {
                           direction="row"
                           justifyContent="flex-end"
                           alignItems="center">
-            {boton}
+            {boton ? boton : ""}
         </Grid>
         <Grid item xs={4}
           container
@@ -31,7 +31,7 @@ function MyTitle(props) {
           justifyContent="flex-end"
           alignItems="center">
           
-          {buscar}
+          {buscar ? buscar : ""}
         </Grid>
       </Grid>
       <hr />
