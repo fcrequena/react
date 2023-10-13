@@ -207,6 +207,53 @@ mutation PointSaleForUser ($codigo: Int!){
 			 descripcion
 			 precio
 			 activo
+			 tipo_producto
 		}
+	}
+}`
+
+export const CREATE_JOURNAL = gql`
+mutation mutation ($codigo:Int!) {
+	createJournal(codigo_punto_venta:$codigo){
+		codigo_dia
+		 codigo_punto_venta
+		 fecha
+		 abierto
+	}
+}`
+
+export const CREATE_JOURNAL_DETAIL = gql`
+mutation mutation (
+		$codigo_dia:Int! 
+		$codigo_producto: Int! 
+		$cantidad: Int! 
+		$cantidad_personas: Int! 
+		$descripcion: String!) 
+{
+	createJournalDetail(
+			codigo_dia: $codigo_dia, 
+			codigo_producto: $codigo_producto, 
+			cantidad:$cantidad, 
+			cantidad_personas: $cantidad_personas, 
+			descripcion: $descripcion
+	){
+		codigo
+		codigo_dia
+		codigo_producto
+		cantidad
+		cantidad_personas
+		descripcion
+	}
+}`
+
+export const GET_JOURNAL_DETAIL_FOR_DAY = gql`
+mutation Mutation($codigo: Int!){
+	getJournalDetailForDay(codigo: $codigo){
+		codigo_producto
+		nombre_producto
+		cantidad
+		descripcion
+		precio
+		tipo_producto
 	}
 }`

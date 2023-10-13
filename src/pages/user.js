@@ -385,9 +385,9 @@ function User(props){
     const bodyUpdatePassword=(
         <div className={classes.modal}>
             <h3>Actualizar contraseña de {productoSeleccionado.nombre}</h3>
-            <TextField name="contrasena" className={classes.inputMaterial} label="Ingrese contraseña" onChange={handleChange}/> <br/>
+            <TextField required type="password" name="contrasena" className={classes.inputMaterial} label="Ingrese contraseña" onChange={handleChange}/> <br/>
             <br/>
-            <TextField name="valcontrasena" className={classes.inputMaterial} label="Ingrese de nuevo su contraseña" onChange={handleChange}/> <br/>
+            <TextField required type="password" name="valcontrasena" className={classes.inputMaterial} label="Ingrese de nuevo su contraseña" onChange={handleChange}/> <br/>
             <br/>
             
             <div align="right">

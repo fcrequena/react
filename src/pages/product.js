@@ -207,11 +207,13 @@ function Product(props){
                 value={tipoSeleccionado}
                 //onChange={handleChange}
                 onChange={(event, newValue) => {
-                    setTipoSeleccionado(newValue);
-                    setProductoSeleccionado(prevState=>({
-                        ...prevState,
-                        "tipo_producto": newValue.codigo
-                    }));
+                    if(newValue !== null){
+                        setTipoSeleccionado(newValue);
+                        setProductoSeleccionado(prevState=>({
+                            ...prevState,
+                            "tipo_producto": newValue.codigo
+                        }));
+                    }
                 }}
                 renderInput={(params) => (
                     <TextField {...params} label="Tipo de producto" />
@@ -252,11 +254,13 @@ function Product(props){
                 clearOnEscape
                 value={tipoSeleccionado}
                 onChange={(event, newValue) => {
-                    setTipoSeleccionado(newValue);
-                    setProductoSeleccionado(prevState=>({
-                        ...prevState,
-                        "tipo_producto": newValue.codigo
-                    }));
+                    if(newValue !== null){
+                        setTipoSeleccionado(newValue);
+                        setProductoSeleccionado(prevState=>({
+                            ...prevState,
+                            "tipo_producto": newValue.codigo
+                        }));
+                    }
                 }}
                 isOptionEqualToValue={(option, value) => option.codigo === value.codigo}
                 renderInput={(params) => (
@@ -335,6 +339,13 @@ function Product(props){
     );
     return (
     <ThemeProvider theme={theme}>
+        {errors?.map(function(error){
+                return(
+                    <Alert severity="error">
+                        {error}
+                    </Alert>
+                )
+            })}
         <div>
         <Container spacing={4} maxWidth="md">
         <MyTitle titulo={title} boton={miBoton} buscar={miFiltro}></MyTitle>

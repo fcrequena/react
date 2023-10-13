@@ -314,11 +314,13 @@ function PointSale(props){
                 value={tipoSeleccionado}
                 //onChange={handleChange}
                 onChange={(event, newValue) => {
-                    setTipoSeleccionado(newValue);
-                    setProductoSeleccionado(prevState=>({
-                        ...prevState,
-                        "producto": newValue.codigo
-                    }));
+                    if(newValue !== null){
+                        setTipoSeleccionado(newValue);
+                        setProductoSeleccionado(prevState=>({
+                            ...prevState,
+                            "producto": newValue.codigo
+                        }));
+                    }   
                 }}
                 renderInput={(params) => (
                     <TextField {...params} label="Tipo de producto" />

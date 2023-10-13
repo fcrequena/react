@@ -19,7 +19,7 @@ function MyTitle(props) {
           {titulo}
           </Typography>
         </Grid>
-        <Grid item xs={4} container
+        <Grid item xs={2} container
                           direction="row"
                           justifyContent="flex-end"
                           alignItems="center">
