@@ -362,6 +362,7 @@ function Product(props){
                     </TableHead>
                     <TableBody>
                         {datosFiltrados
+                        .sort((x, y) => x.codigo - y.codigo)
                         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                         .map(console=>(
                             <TableRow key={console.codigo}>

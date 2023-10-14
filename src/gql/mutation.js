@@ -249,6 +249,7 @@ mutation mutation (
 export const GET_JOURNAL_DETAIL_FOR_DAY = gql`
 mutation Mutation($codigo: Int!){
 	getJournalDetailForDay(codigo: $codigo){
+		codigo_detalle
 		codigo_producto
 		nombre_producto
 		cantidad
@@ -257,3 +258,46 @@ mutation Mutation($codigo: Int!){
 		tipo_producto
 	}
 }`
+
+export const EDIT_JOURNAL_DETAIL = gql`
+mutation mutation (
+		$codigo_detalle: Int!, 
+		$codigo_dia:Int!,
+		$cantidad: Int!, 
+		$descripcion: String!
+	) {
+		editJournalDetail(
+				codigo_detalle: $codigo_detalle  
+				codigo_dia: $codigo_dia
+				cantidad: $cantidad 
+				descripcion: $descripcion
+		){
+			codigo
+			codigo_dia
+			codigo_producto
+			cantidad
+			cantidad_personas
+			descripcion
+   		}
+	}
+`
+
+export const DELETE_JOURNAL_DETAIL = gql`
+mutation mutation (
+		$codigo_detalle: Int!, 
+		$codigo_dia:Int!) {
+	deleteJournalDetail(
+		codigo_detalle: $codigo_detalle  
+		codigo_dia: $codigo_dia 
+	) 
+	{
+		codigo
+		codigo_dia
+		codigo_producto
+		cantidad
+		cantidad_personas
+		descripcion
+	}
+}
+`
+

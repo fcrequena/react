@@ -412,6 +412,7 @@ function PointSale(props){
                 </TableHead>
                 <TableBody>
                 {datosFiltrados
+                .sort((x, y) => x.codigo - y.codigo)
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => (
                     <Fragment key={row.codigo}>
