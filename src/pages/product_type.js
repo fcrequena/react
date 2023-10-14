@@ -19,6 +19,7 @@ import { GET_ALL_PRODUCT, GET_ALL_TYPE_PRODUCT, GET_PRODUCT_BYID } from "../gql/
 import {CREATE_TYPE_PRODUCT, EDIT_TYPE_PRODUCT, DELETE_TYPE_PRODUCT } from '../gql/mutation'
 import MyTitle from "../components/title";
 import { styleModal } from "../components/modal";
+import SimpleSnackbar from "../components/snackbars";
 /* CONSULTAS DE GRAPHQL */
 const theme = createTheme();
 
@@ -50,9 +51,19 @@ function TypeProduct(props){
     const [isChecked, setIsChecked] = useState(false);
     const [ tipoSeleccionado, setTipoSeleccionado ] = useState(null);
 
-    // const handleCheckboxChange = () => {
-    //     setIsChecked(!isChecked);
-    //   };
+    const [ mostrarSnackBar, setMostrarSnackBar ] = useState({
+        mensaje: " -- inicio ===",
+        esError: false,
+        mostrar: false
+    });
+    
+    const closeSnackBars = () => {
+        setMostrarSnackBar({
+            mensaje: "",
+            esError: true,
+            mostrar: false
+        });
+    }
 
     const handleChange = e => {
         const { name, value } = e.target;
@@ -77,7 +88,27 @@ function TypeProduct(props){
     });
     //Mutaciones ------------------------------------------------------------------------
     function funCreateTypeProducto()
-    {
+    {   
+        const { nombre, descripcion} = productoSeleccionado;
+        
+        if(nombre === undefined || nombre === ""){
+            setMostrarSnackBar({
+                mensaje: "Ingrese el nombre del producto.",
+                esError: true,
+                mostrar: true
+            });
+            return;
+        }
+        
+        if(descripcion === undefined || descripcion === ""){
+            setMostrarSnackBar({
+                mensaje: "Ingrese la descripcion del producto.",
+                esError: true,
+                mostrar: true
+            });
+            return;
+        }
+
         createTypeProducto();           
     }
 
@@ -89,12 +120,35 @@ function TypeProduct(props){
                     descripcion: productoSeleccionado.descripcion} ,
         onCompleted: (data) => {
             setTypeProductData(typeProductData.concat(data.createTypeProduct));
+            setMostrarSnackBar({
+                mensaje: "Registro creado con exito.",
+                esError: false,
+                mostrar: true
+            });
             openCloseModalCreate();
         }
     });
 
     function funEditTypeProducto()
     {
+        const { nombre, descripcion} = productoSeleccionado;
+        if(nombre === undefined || nombre === ""){
+            setMostrarSnackBar({
+                mensaje: "Ingrese el nombre del producto.",
+                esError: true,
+                mostrar: true
+            });
+            return;
+        }
+        
+        if(descripcion === undefined || descripcion === ""){
+            setMostrarSnackBar({
+                mensaje: "Ingrese la descripcion del producto.",
+                esError: true,
+                mostrar: true
+            });
+            return;
+        }
         editTypeProducto();           
     }
 
@@ -118,7 +172,11 @@ function TypeProduct(props){
                     var indiceAEliminar = newData.findIndex((valor) => valor.codigo === editado.codigo);
                     const nuevoArray = [...newData.slice(0, indiceAEliminar), ...newData.slice(indiceAEliminar + 1)];
                     setTypeProductData(nuevoArray.concat(editado));
-                //setProductData(nuevoArray);
+                    setMostrarSnackBar({
+                        mensaje: "Registro actualizado con exito.",
+                        esError: false,
+                        mostrar: true
+                    });
                 openCloseModalEdit();
         }
     });
@@ -148,6 +206,11 @@ function TypeProduct(props){
                     const nuevoArray = [...newData.slice(0, indiceAEliminar), ...newData.slice(indiceAEliminar + 1)];
 
                     setTypeProductData(nuevoArray.concat(editado));
+                    setMostrarSnackBar({
+                        mensaje: "Registro eliminado con exito.",
+                        esError: false,
+                        mostrar: true
+                    });
                 openCloseModalDelete();
         }
     });
@@ -164,15 +227,18 @@ function TypeProduct(props){
 
     //Modales--------------------------------------------------------------------------
     const openCloseModalCreate=()=>{
+        setErrors([]);
         setModalCreate(!modalCreate);
     }
 
     const openCloseModalEdit=()=>{
+        setErrors([]);
         setTipoSeleccionado(null);
         setModalEdit(!modalEdit);
     }
 
     const openCloseModalDelete=()=>{
+        setErrors([]);
         setTipoSeleccionado(null);
         setModalDelete(!modalDelete);
     }
@@ -203,17 +269,6 @@ function TypeProduct(props){
             <br/>
             <TextField name="descripcion" className={classes.inputMaterial} label="Descripcion" onChange={handleChange}/> <br/>
             <br/>
-            {/* <FormControlLabel
-                control={
-                <Checkbox
-                    checked={isChecked}
-                    onChange={handleChange}
-                    name="miCheckbox"
-                    color="primary" // Puedes cambiar el color según tus preferencias
-                />
-                }
-                label="Mi Checkbox"
-            /> */}
             <br/>
             <div align="right">
                 <Stack direction="row" spacing={2} justifyContent="flex-end">
@@ -311,9 +366,16 @@ function TypeProduct(props){
 
       return (
     <ThemeProvider theme={theme}>
-        {/* <div className="App"> */}
+    {errors?.map(function(error){
+        return(
+        <Alert severity="error"> {error} </Alert>
+        )
+    })}
         <div>
         <Container spacing={4} maxWidth="md">
+        {mostrarSnackBar.mostrar && (
+            <SimpleSnackbar onClose={closeSnackBars} objeto={mostrarSnackBar} />
+        )}
         <MyTitle titulo={title} boton={miBoton} buscar={miFiltro}   ></MyTitle> 
             <br/>
             <TableContainer>

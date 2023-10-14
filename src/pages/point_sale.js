@@ -21,6 +21,7 @@ import { Fragment } from "react";
 import { CREATE_POINT_SALE, EDIT_POINT_SALE, DELETE_POINT_SALE, CREATE_POINT_PRODUCTO } from "../gql/mutation";
 import { GET_ALL_POINT_SALE, GET_ALL_PRODUCT } from "../gql/query";
 import { styleModal } from "../components/modal";
+import SimpleSnackbar from "../components/snackbars";
 /* CONSULTAS DE GRAPHQL */
 const theme = createTheme();
 
@@ -50,7 +51,21 @@ function PointSale(props){
     const [filtro, setFiltro] = useState('');
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
+    const [ mostrarSnackBar, setMostrarSnackBar ] = useState({
+        mensaje: " -- inicio ===",
+        esError: false,
+        mostrar: false
+    });
+    
+    const closeSnackBars = () => {
+        setMostrarSnackBar({
+            mensaje: "",
+            esError: true,
+            mostrar: false
+        });
+    }
 
+  
     const handleChange = e => {
         const { name, value } = e.target;
         setProductoSeleccionado(prevState=>({
@@ -61,7 +76,6 @@ function PointSale(props){
     //---------------------------------------------
     const {loading, error, data} = useQuery(GET_ALL_POINT_SALE,{
         onError({ graphQLErrors }){
-            // console.log({graphQLErrors})
             setErrors(graphQLErrors);
         },
         onCompleted: (queryData) =>{
@@ -84,6 +98,24 @@ function PointSale(props){
     //Mutaciones ------------------------------------------------------------------------
     function funCreateProducto()
     {
+        const { nombre, descripcion} = productoSeleccionado;
+        if(nombre === undefined || nombre === ""){
+            setMostrarSnackBar({
+                mensaje: "Ingrese el nombre del tipo de producto.",
+                esError: true,
+                mostrar: true
+            });
+            return;
+        }
+        
+        if(descripcion === undefined || descripcion === ""){
+            setMostrarSnackBar({
+                mensaje: "Ingrese la descripcion del tipo de producto.",
+                esError: true,
+                mostrar: true
+            });
+            return;
+        }
         createProducto();           
     }
 
@@ -95,12 +127,35 @@ function PointSale(props){
                     descripcion: productoSeleccionado.descripcion} ,
         onCompleted: (data) => {
             setPointSaleData(pointSaleData.concat(data.createPointSale));
+            setMostrarSnackBar({
+                mensaje: "Registro creado con exito.",
+                esError: false,
+                mostrar: true
+            });
             openCloseModalCreate();
         }
     });
 
     function funEditProducto()
     {
+        const { nombre, descripcion} = productoSeleccionado;
+        if(nombre === undefined || nombre === ""){
+            setMostrarSnackBar({
+                mensaje: "Ingrese el nombre del tipo de producto.",
+                esError: true,
+                mostrar: true
+            });
+            return;
+        }
+        
+        if(descripcion === undefined || descripcion === ""){
+            setMostrarSnackBar({
+                mensaje: "Ingrese la descripcion del tipo de producto.",
+                esError: true,
+                mostrar: true
+            });
+            return;
+        }
         editProducto();           
     }
 
@@ -123,6 +178,11 @@ function PointSale(props){
                     var indiceAEliminar = newData.findIndex((valor) => valor.codigo === editado.codigo);
                     const nuevoArray = [...newData.slice(0, indiceAEliminar), ...newData.slice(indiceAEliminar + 1)];
                     setPointSaleData(nuevoArray.concat(editado));
+                    setMostrarSnackBar({
+                        mensaje: "Registro actualizado con exito.",
+                        esError: false,
+                        mostrar: true
+                    });
                 openCloseModalEdit();
         }
     });
@@ -151,12 +211,33 @@ function PointSale(props){
                     const nuevoArray = [...newData.slice(0, indiceAEliminar), ...newData.slice(indiceAEliminar + 1)];
 
                     setPointSaleData(nuevoArray.concat(editado));
+                    setMostrarSnackBar({
+                        mensaje: "Registro eliminado con exito.",
+                        esError: false,
+                        mostrar: true
+                    });
                 openCloseModalDelete();
         }
     });
 
     function funAddPProducto(){
-        // console.log(productoSeleccionado)
+        const { precio , producto } = productoSeleccionado;
+        if(precio === 0 || precio === undefined){
+            setMostrarSnackBar({
+                mensaje: "Ingrese un precio para el producto, mayor a cero.",
+                esError: true,
+                mostrar: true
+            });
+            return;
+        }
+        if(producto === 0 || producto === undefined ){
+            setMostrarSnackBar({
+                mensaje: "Seleccione un tipo de producto.",
+                esError: true,
+                mostrar: true
+            });
+            return;
+        }
         addPProducto();
     }
 
@@ -168,6 +249,11 @@ function PointSale(props){
                      codigo_punto_venta: productoSeleccionado.codigo,
                     precio: parseFloat(productoSeleccionado.precio)},
         onCompleted: (data) => {
+            setMostrarSnackBar({
+                mensaje: "Registro asignado con exito.",
+                esError: false,
+                mostrar: true
+            });
             openCloseModalAdd();
         }
     })
@@ -179,7 +265,6 @@ function PointSale(props){
             navigate('/');
             return;
         }
-        // console.log({error})
         setErrors(error);
     }
     
@@ -188,20 +273,24 @@ function PointSale(props){
 
     //Modales--------------------------------------------------------------------------
     const openCloseModalCreate=()=>{
+        setErrors([]);
         setModalCreate(!modalCreate);
     }
 
     const openCloseModalEdit=()=>{
+        setErrors([]);
         setTipoSeleccionado(null);
         setModalEdit(!modalEdit);
     }
 
     const openCloseModalDelete=()=>{
+        setErrors([]);
         setTipoSeleccionado(null);
         setModalDelete(!modalDelete);
     }
 
     const openCloseModalAdd=()=>{
+        setErrors([]);
         setTipoSeleccionado(null);
         setModalAdd(!modalAdd);
     }
@@ -241,14 +330,6 @@ function PointSale(props){
                 <Button variant="contained" onClick={openCloseModalCreate} color="error">Cerrar</Button>
                 <Button variant="contained" onClick={funCreateProducto} color="primary">Crear</Button>
             </Stack>
-
-                {errors?.map(function(error){
-                return(
-                    <Alert severity="error">
-                        {error}
-                    </Alert>
-                )
-            })}
             </div>
         </div>
         
@@ -269,13 +350,6 @@ function PointSale(props){
                 <Button variant="contained" onClick={openCloseModalEdit} color="error">Cerrar</Button>
                 <Button variant="contained" onClick={funEditProducto} color="primary">Editar</Button>
             </Stack>
-                {errors?.map(function(error){
-                return(
-                    <Alert severity="error">
-                        {error}
-                    </Alert>
-                )
-            })}
             </div>
         </div>
         
@@ -291,13 +365,6 @@ function PointSale(props){
                 <Button variant="contained" onClick={openCloseModalDelete}>No</Button>
                 <Button variant="contained" onClick={funDeleteProducto} color="primary">Sí</Button>
             </Stack>
-                {errors?.map(function(error){
-                return(
-                    <Alert severity="error">
-                        {error}
-                    </Alert>
-                )
-            })}
             </div>
         </div>
         
@@ -344,13 +411,6 @@ function PointSale(props){
                 <Button variant="contained" onClick={openCloseModalAdd} color="error">Cerrar</Button>
                 <Button variant="contained" onClick={funAddPProducto} color="primary">Agregar</Button>  
             </Stack>
-                {errors?.map(function(error){
-                return(
-                    <Alert severity="error">
-                        {error}
-                    </Alert>
-                )
-            })}
             </div>
         </div>
         
@@ -396,8 +456,16 @@ function PointSale(props){
 
     return (
     <ThemeProvider theme={theme}>
+    {errors?.map(function(error){
+        return(
+            <Alert severity="error">{error}</Alert>
+        )
+    })}
         <div> 
         <Container spacing={6} maxWidth="md">
+        {mostrarSnackBar.mostrar && (
+            <SimpleSnackbar onClose={closeSnackBars} objeto={mostrarSnackBar} />
+        )}
             <MyTitle titulo={title} boton={miBoton} buscar={miFiltro}></MyTitle>
             <TableContainer >
             <Table>

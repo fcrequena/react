@@ -18,6 +18,7 @@ import { GET_ALL_PRODUCT, GET_ALL_TYPE_PRODUCT, GET_PRODUCT_BYID } from "../gql/
 
 import MyTitle from "../components/title";
 import { styleModal } from "../components/modal";
+import SimpleSnackbar from "../components/snackbars";
 /* CONSULTAS DE GRAPHQL */
 const theme = createTheme();
 
@@ -56,6 +57,21 @@ function Product(props){
             [name]: value
         }))
     }
+
+    const [ mostrarSnackBar, setMostrarSnackBar ] = useState({
+        mensaje: " -- inicio ===",
+        esError: false,
+        mostrar: false
+    });
+    
+    const closeSnackBars = () => {
+        setMostrarSnackBar({
+            mensaje: "",
+            esError: true,
+            mostrar: false
+        });
+    }
+    
     //---------------------------------------------
     const {loading, error, data} = useQuery(GET_ALL_PRODUCT,{
         onCompleted: (queryData) =>{
@@ -73,6 +89,36 @@ function Product(props){
     //Mutaciones ------------------------------------------------------------------------
     function funCreateProducto()
     {
+        const {nombre, descripcion, tipo_producto} = productoSeleccionado;    
+
+        if(nombre === "" || nombre === undefined){
+            setMostrarSnackBar({
+                mensaje: "Ingrese el nombre del producto.",
+                esError: true,
+                mostrar: true
+            });    
+            return;
+        }
+
+        if(descripcion === "" || descripcion === undefined){
+            setMostrarSnackBar({
+                mensaje: "Ingrese la descripcion del producto.",
+                esError: true,
+                mostrar: true
+            });    
+            return;
+        }
+
+        if(tipo_producto === "" || tipo_producto === undefined){
+            setMostrarSnackBar({
+                mensaje: "Seleccione el tipo de producto.",
+                esError: true,
+                mostrar: true
+            });    
+            return;
+        }
+
+
         createProducto();           
     }
 
@@ -85,6 +131,11 @@ function Product(props){
                     tipo_producto: productoSeleccionado.tipo_producto} ,
         onCompleted: (data) => {
             setProductData(productData.concat(data.createProduct));
+            setMostrarSnackBar({
+                mensaje: "Registro creado con exito.",
+                esError: false,
+                mostrar: true
+            });
             openCloseModalCreate();
         }
     });
@@ -114,7 +165,11 @@ function Product(props){
                     var indiceAEliminar = newData.findIndex((valor) => valor.codigo === editado.codigo);
                     const nuevoArray = [...newData.slice(0, indiceAEliminar), ...newData.slice(indiceAEliminar + 1)];
                     setProductData(nuevoArray.concat(editado));
-                //setProductData(nuevoArray);
+                    setMostrarSnackBar({
+                        mensaje: "Registro actualizado con exito.",
+                        esError: false,
+                        mostrar: true
+                    });
                 openCloseModalEdit();
         }
     });
@@ -143,7 +198,12 @@ function Product(props){
                     var indiceAEliminar = newData.findIndex((valor) => valor.codigo === editado.codigo);
                     const nuevoArray = [...newData.slice(0, indiceAEliminar), ...newData.slice(indiceAEliminar + 1)];
 
-                    //setProductData(nuevoArray.concat(editado));
+                    setMostrarSnackBar({
+                        mensaje: "Registro eliminado con exito.",
+                        esError: false,
+                        mostrar: true
+                    });
+                    
                     setProductData(nuevoArray);
                 openCloseModalDelete();
         }
@@ -161,20 +221,24 @@ function Product(props){
 
     //Modales--------------------------------------------------------------------------
     const openCloseModalCreate=()=>{
+        setErrors([]);
         setModalCreate(!modalCreate);
     }
 
     const openCloseModalEdit=()=>{
+        setErrors([]);
         setTipoSeleccionado(null);
         setModalEdit(!modalEdit);
     }
 
     const openCloseModalDelete=()=>{
+        setErrors([]);
         setTipoSeleccionado(null);
         setModalDelete(!modalDelete);
     }
 
     const seleccionarProducto=(producto, caso)=>{
+        setErrors([]);
         let tipo = typeProductData.find((valor)=> valor.codigo === producto.tipo_producto);
        
         setTipoSeleccionado(tipo);
@@ -348,6 +412,9 @@ function Product(props){
             })}
         <div>
         <Container spacing={4} maxWidth="md">
+        {mostrarSnackBar.mostrar && (
+            <SimpleSnackbar onClose={closeSnackBars} objeto={mostrarSnackBar} />
+        )}
         <MyTitle titulo={title} boton={miBoton} buscar={miFiltro}></MyTitle>
             <br/>
             <TableContainer>

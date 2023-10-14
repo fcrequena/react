@@ -37,11 +37,6 @@ function Login(props){
 
 
     const [loginUser, { loading }] = useMutation(LOGIN_USER,{
-        /*update(proxy, { data: { loginUser: userData}}){
-            console.log({userData})
-            context.login(userData);
-            navigate('/');
-        },*/
         onError({ graphQLErrors }){
             setErrors(graphQLErrors);
         },

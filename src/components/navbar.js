@@ -28,7 +28,6 @@ function NavBar() {
       setAnchorEl(null);
     };
 
-// console.log({user})
     return (
         <Box sx={{ flexGrow: 1}}>
             <AppBar position="static">

@@ -1,19 +1,17 @@
 import {AuthContext } from '../context/authContext'
 import { useContext, useState } from "react";
-import { Alert, Autocomplete, Box, Button, Container, Grid, Modal, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from "@mui/material"
-
+import { Alert, Autocomplete, Box, Button, Container, Grid, IconButton, Modal, Snackbar, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from "@mui/material"
 import * as React from 'react';
-import Divider from '@mui/material/Divider';
-
 import { ThemeProvider, createTheme, styled } from '@mui/material/styles';
 import {makeStyles} from "@mui/styles";
-import SpanningTable from '../components/tableDiary';
 import { styleModal, Item } from '../components/modal';
 import { useMutation } from '@apollo/react-hooks';
 import { CREATE_JOURNAL, CREATE_JOURNAL_DETAIL, DELETE_JOURNAL_DETAIL, EDIT_JOURNAL_DETAIL, GET_JOURNAL_DETAIL_FOR_DAY, GET_POINT_SALE_USER } from '../gql/mutation';
 import MyTitle from '../components/title';
 import { Delete, Edit } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
+
+import SimpleSnackbar from '../components/snackbars';
 
 const theme = createTheme();
 const useStyles = makeStyles((theme) => (styleModal));
@@ -38,10 +36,13 @@ function Diary(){
     const [ modalCreate, setModalCreate ] = useState(false);
     const [ modalDelete, setModalDelete ] = useState(false);
     const [ modalEdit, setModalEdit ] = useState(false);
-
+    const [ mostrarSnackBar, setMostrarSnackBar ] = useState({
+        mensaje: " -- inicio ===",
+        esError: false,
+        mostrar: false
+    });
     const { user, logout} = useContext(AuthContext);
      
-    
     const handleChange = e => {
         const {name, value } = e.target;
         setProductoSeleccionado(prevState => ({
@@ -51,8 +52,25 @@ function Diary(){
     };
 
     const funCreateDetail = () => {
+        const { producto, cantidad } = productSeleccionado;
+        if(producto === undefined || producto === ""){
+            setMostrarSnackBar({
+                mensaje: "Seleccione un producto",
+                esError: true,
+                mostrar: true
+            });
+            return;
+        }
+
+        if(cantidad <= 0 || cantidad === undefined){
+            setMostrarSnackBar({
+                mensaje: "Ingrese una cantidad mayor a cero.",
+                esError: true,
+                mostrar: true
+            });
+            return;
+        }
         createDetail();
-        // setProductoSeleccionado({});
     }
 
     const openCloseModalCreate=()=>{
@@ -81,8 +99,6 @@ function Diary(){
     }
 
     const funSeleccionarRegistro = (registro, accion) => {
-        console.log({registro, accion});
-
         setProductoSeleccionado(registro);
 
         if(accion=== 'Eliminar'){
@@ -97,13 +113,7 @@ function Diary(){
     }
 
     const funDeleteJournal = () => {
-        console.log({journalDetailForDay})
         deleteDetail();
-        console.log({
-            codigo_detalle: productSeleccionado.codigo_detalle, 
-            codigo_dia: journal.codigo_dia, 
-            codigo_producto: productSeleccionado.codigo_producto
-        })
     }
 
     /*****MUTATION */
@@ -132,6 +142,11 @@ function Diary(){
                 "tipo_producto": newValue[0].tipo_producto,
                 "__typename": "JournalDetailForDay"
             }))
+            setMostrarSnackBar({
+                mensaje: "Registro creado con exito.",
+                esError: false,
+                mostrar: true
+            });
         }
     })
 
@@ -155,6 +170,11 @@ function Diary(){
                 var indiceAEliminar = newData.findIndex((valor) => valor.codigo_detalle === editado.codigo);
                 const nuevoArray = [...newData.slice(0, indiceAEliminar), ...newData.slice(indiceAEliminar + 1)];
                 setJournalDetailForDay(nuevoArray);
+                setMostrarSnackBar({
+                mensaje: "Registro eliminado con exito.",
+                esError: false,
+                mostrar: true
+            });
                 openCloseModalDelete();
         }
     });
@@ -195,6 +215,11 @@ function Diary(){
                 "tipo_producto": newValue[0].tipo_producto,
                 "__typename": "JournalDetailForDay"
             }));
+            setMostrarSnackBar({
+                mensaje: "Registro actualizado con exito.",
+                esError: false,
+                mostrar: true
+            });
             openCloseModalEdit();
         }
     });
@@ -268,13 +293,6 @@ function Diary(){
                     <Button variant="contained" onClick={openCloseModalDelete} color="secondary">Cerrar</Button>
                     <Button variant="contained" onClick={funDeleteJournal} color="error">Eliminar</Button>
                 </Stack>
-                {errors?.map(function(error){
-                    return(
-                        <Alert severity="error">
-                        {error}
-                    </Alert>
-                )
-            })}
             </div>
         </div>
     )
@@ -317,13 +335,6 @@ function Diary(){
                     <Button variant="contained" onClick={openCloseModalEdit} color="secondary">Cerrar</Button>
                     <Button variant="contained" onClick={funEditJournal} color="primary">Editar</Button>
                 </Stack>
-                {errors?.map(function(error){
-                    return(
-                        <Alert severity="error">
-                        {error}
-                    </Alert>
-                )
-            })}
             </div>
         </div>
     )
@@ -359,13 +370,6 @@ function Diary(){
                     <Button variant="contained" onClick={openCloseModalCreate} color="error">Cerrar</Button>
                     <Button variant="contained" onClick={loadingDataPointSale} color="primary">Seleccionar</Button>
                 </Stack>
-                {errors?.map(function(error){
-                    return(
-                        <Alert severity="error">
-                        {error}
-                    </Alert>
-                )
-            })}
             </div>
         </div>
     )
@@ -373,22 +377,32 @@ function Diary(){
     React.useEffect(() => {
         if(user === null) {navigate('/');}
         funSelectPointSale();
+
     }, [])
     
-    const onChangeInput = () => {
-        setErrors(["Funcionalidad en desarrollo"])
+    const closeSnackBars = () => {
+        setMostrarSnackBar({
+            mensaje: "",
+            esError: true,
+            mostrar: false
+        });
     }
 
     return (
     <ThemeProvider theme={theme}>
-        {errors?.map(function(error){
-                return(
-                    <Alert severity="error">
-                    {error}
-                </Alert>
-            )
-        })}
+    {errors?.map(function(error){
+            return(
+                <Alert severity="error">
+                {error}
+            </Alert>
+        )
+    })}
         <Container spacing={2} maxWidth="lg">
+
+        {mostrarSnackBar.mostrar && (
+            <SimpleSnackbar onClose={closeSnackBars} objeto={mostrarSnackBar} />
+        )}
+        
         { isLoggeIn === true ?
         
             <MyTitle titulo={'Registro diario de ' +productPointSale.nombre}></MyTitle>

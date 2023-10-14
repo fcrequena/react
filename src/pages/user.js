@@ -22,7 +22,7 @@ import { CREATE_USER, UPDATE_USER, DELETE_USER, UPDATE_PASSWORD,
 import MyTitle from "../components/title";
 import { styleModal } from "../components/modal";
 import MultipleSelectChip from "../components/selectMultiple";
-
+import SimpleSnackbar from "../components/snackbars";
 
 /* CONSULTAS DE GRAPHQL */
 const theme = createTheme();
@@ -66,9 +66,19 @@ function User(props){
     const [isChecked, setIsChecked] = useState(false);
     const [ tipoSeleccionado, setTipoSeleccionado ] = useState(null);
 
-    // const handleCheckboxChange = () => {
-    //     setIsChecked(!isChecked);
-    //   };
+    const [ mostrarSnackBar, setMostrarSnackBar ] = useState({
+        mensaje: " -- inicio ===",
+        esError: false,
+        mostrar: false
+    });
+    
+    const closeSnackBars = () => {
+        setMostrarSnackBar({
+            mensaje: "",
+            esError: true,
+            mostrar: false
+        });
+    }
 
     const handleChange = e => {
         const { name, value } = e.target;
@@ -100,7 +110,37 @@ function User(props){
     });
 
     //Mutaciones ------------------------------------------------------------------------
-    const funCreateTypeProducto = () => createTypeProducto();
+    const funCreateTypeProducto = () => {
+        const { contrasena, correo, nombre } = productoSeleccionado;
+
+        if(nombre === "" || nombre === undefined){
+            setMostrarSnackBar({
+                mensaje: "Ingrese el nombre del usuario.",
+                esError: true,
+                mostrar: true
+            });    
+            return;
+        }
+
+        if(correo === "" || correo === undefined){
+            setMostrarSnackBar({
+                mensaje: "Ingrese el nombre de la cuenta.",
+                esError: true,
+                mostrar: true
+            });    
+            return;
+        }
+
+        if(contrasena === "" || contrasena === undefined){
+            setMostrarSnackBar({
+                mensaje: "Ingrese una contraseña.",
+                esError: true,
+                mostrar: true
+            });    
+            return;
+        }
+        createTypeProducto();
+    };
 
     const [createTypeProducto, { createLoading }] = useMutation(CREATE_USER,{
         onError({ graphQLErrors }){
@@ -113,11 +153,38 @@ function User(props){
                 } ,
         onCompleted: (data) => {
             setTypeProductData(typeProductData.concat(data.createUser));
+            setMostrarSnackBar({
+                mensaje: "Registro creado con exito.",
+                esError: false,
+                mostrar: true
+            });
             openCloseModalCreate();
         }
     });
 
-    const funEditTypeProducto = () => editTypeProducto();     
+    const funEditTypeProducto = () => {
+        const { contrasena, correo, nombre } = productoSeleccionado;
+
+        if(nombre === "" || nombre === undefined){
+            setMostrarSnackBar({
+                mensaje: "Ingrese el nombre del usuario.",
+                esError: true,
+                mostrar: true
+            });    
+            return;
+        }
+
+        if(correo === "" || correo === undefined){
+            setMostrarSnackBar({
+                mensaje: "Ingrese el nombre de la cuenta.",
+                esError: true,
+                mostrar: true
+            });    
+            return;
+        }
+
+        editTypeProducto()
+    };     
 
     const [editTypeProducto, { editLoading }] = useMutation(UPDATE_USER,{
         onError({ graphQLErrors }){
@@ -140,6 +207,11 @@ function User(props){
                     var indiceAEliminar = newData.findIndex((valor) => valor.codigo === editado.codigo);
                     const nuevoArray = [...newData.slice(0, indiceAEliminar), ...newData.slice(indiceAEliminar + 1)];
                     setTypeProductData(nuevoArray.concat(editado));
+                    setMostrarSnackBar({
+                        mensaje: "Registro actualizado con exito.",
+                        esError: false,
+                        mostrar: true
+                    });
                 //setProductData(nuevoArray);
                 openCloseModalEdit();
         }
@@ -166,11 +238,46 @@ function User(props){
                     const nuevoArray = [...newData.slice(0, indiceAEliminar), ...newData.slice(indiceAEliminar + 1)];
 
                     setTypeProductData(nuevoArray.concat(editado));
+                    setMostrarSnackBar({
+                        mensaje: "Registro eliminado con exito.",
+                        esError: false,
+                        mostrar: true
+                    });
                 openCloseModalDelete();
         }
     });
 
-    const funUpdatePasswordUser = () => updatePasswordUser();
+    const funUpdatePasswordUser = () => {
+        const { contrasena, valcontrasena, nombre } = productoSeleccionado;
+
+        if(contrasena === "" || contrasena === undefined){
+            setMostrarSnackBar({
+                mensaje: "Ingrese una contraseña.",
+                esError: true,
+                mostrar: true
+            });    
+            return;
+        }
+
+        if(valcontrasena === "" || valcontrasena === undefined){
+            setMostrarSnackBar({
+                mensaje: "Ingrese de nuevo la contraseña.",
+                esError: true,
+                mostrar: true
+            });    
+            return;
+        }
+
+        if(contrasena !== valcontrasena ){
+            setMostrarSnackBar({
+                mensaje: "La contraseña ingresada no coincide.",
+                esError: true,
+                mostrar: true
+            });    
+            return;
+        }
+        updatePasswordUser()
+    };
 
     const [ updatePasswordUser, { updatePasswordLoading }] = useMutation(UPDATE_PASSWORD,{
         onError({graphQLErrors}){
@@ -191,6 +298,11 @@ function User(props){
                     var indiceAEliminar = newData.findIndex((valor) => valor.codigo === editado.codigo);
                     const nuevoArray = [...newData.slice(0, indiceAEliminar), ...newData.slice(indiceAEliminar + 1)];
                     setTypeProductData(nuevoArray.concat(editado));
+                    setMostrarSnackBar({
+                        mensaje: "Registro actualizado con exito.",
+                        esError: false,
+                        mostrar: true
+                    });
                 openCloseModalUpdatePassword();
             
         }
@@ -226,6 +338,11 @@ function User(props){
             var indiceAEliminar = newData.findIndex((valor) => valor.codigo === productoSeleccionado.codigo)
             const nuevoArray = [...newData.slice(0, indiceAEliminar), ...newData.slice(indiceAEliminar + 1)];
             setTypeProductData(nuevoArray.concat(usuario));
+            setMostrarSnackBar({
+                mensaje: "Registro creado con exito.",
+                esError: false,
+                mostrar: true
+            });
             openCloseModalPointSale();
         }
     })
@@ -262,6 +379,11 @@ function User(props){
             var indiceAEliminar = newData.findIndex((valor) => valor.codigo === productoSeleccionado.codigo)
             const nuevoArray = [...newData.slice(0, indiceAEliminar), ...newData.slice(indiceAEliminar + 1)];
             setTypeProductData(nuevoArray.concat(usuario));
+            setMostrarSnackBar({
+                mensaje: "Rol asignado con exito.",
+                esError: false,
+                mostrar: true
+            });
             openCloseModalTypeRol();
         }
     })
@@ -417,12 +539,12 @@ function User(props){
                 <Button variant="contained" onClick={openCloseModalDelete} color="error">No</Button>
                 <Button variant="contained" onClick={funDeleteTypeProducto} color="warning">Sí</Button>
             </Stack>
-                {errors?.map(function(error){
-                return(
-                    <Alert severity="error">
-                        {error}
-                    </Alert>
-                )
+            {errors?.map(function(error){
+            return(
+                <Alert severity="error">
+                    {error}
+                </Alert>
+            )
             })}
             </div>
         </div>
@@ -520,9 +642,16 @@ function User(props){
 
       return (
     <ThemeProvider theme={theme}>
-        {/* <div className="App"> */}
+        {errors?.map(function(error){
+            return(
+            <Alert severity="error"> {error} </Alert>
+            )
+        })}
         <div>
         <Container spacing={4} maxWidth="md">
+        {mostrarSnackBar.mostrar && (
+            <SimpleSnackbar onClose={closeSnackBars} objeto={mostrarSnackBar} />
+        )}
         <MyTitle titulo={title} boton={miBoton} buscar={miFiltro}   ></MyTitle> 
             <br/>
             <TableContainer>
