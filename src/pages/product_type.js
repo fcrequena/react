@@ -8,8 +8,6 @@ import { TextField, Button, Container, Stack, Alert,
             Modal, TablePagination
     } from "@mui/material";
 
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-import {makeStyles} from "@mui/styles";
 import {Edit, Delete } from '@mui/icons-material';
 
 import { gql } from 'graphql-tag';
@@ -18,18 +16,15 @@ import { useNavigate } from "react-router-dom";
 import { GET_ALL_PRODUCT, GET_ALL_TYPE_PRODUCT, GET_PRODUCT_BYID } from "../gql/query";
 import {CREATE_TYPE_PRODUCT, EDIT_TYPE_PRODUCT, DELETE_TYPE_PRODUCT } from '../gql/mutation'
 import MyTitle from "../components/title";
-import { styleModal } from "../components/modal";
-import SimpleSnackbar from "../components/snackbars";
-/* CONSULTAS DE GRAPHQL */
-const theme = createTheme();
 
-/* ESTILOS MODAL */
-const useStyles = makeStyles((theme) => (styleModal));
+import SimpleSnackbar from "../components/snackbars";
+
+import '../css/styles.css';
 
 function TypeProduct(props){
 
     const context = useContext(AuthContext)
-    const classes = useStyles();
+
     let navigate = useNavigate();
 
     const [ errors, setErrors] = useState([]);
@@ -263,11 +258,11 @@ function TypeProduct(props){
     const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
     const bodyCreate=(
-        <div className={classes.modal}>
+        <div className="modal">
             <h3>Crear {title}</h3>
-            <TextField name="nombre" className={classes.inputMaterial} label="Nombre" onChange={handleChange}/> <br/>
+            <TextField name="nombre" className="inputMaterial" label="Nombre" onChange={handleChange}/> <br/>
             <br/>
-            <TextField name="descripcion" className={classes.inputMaterial} label="Descripcion" onChange={handleChange}/> <br/>
+            <TextField name="descripcion" className="inputMaterial" label="Descripcion" onChange={handleChange}/> <br/>
             <br/>
             <br/>
             <div align="right">
@@ -288,11 +283,11 @@ function TypeProduct(props){
     )
 
     const bodyEdit=(
-        <div className={classes.modal}>
+        <div className="modal">
             <h3>Editar {title}</h3>
-            <TextField name="nombre" className={classes.inputMaterial} label="Nombre" onChange={handleChange} value={productoSeleccionado && productoSeleccionado.nombre}/> <br/>
+            <TextField name="nombre" className="inputMaterial" label="Nombre" onChange={handleChange} value={productoSeleccionado && productoSeleccionado.nombre}/> <br/>
             <br/>
-            <TextField name="descripcion" className={classes.inputMaterial} label="Descripcion" onChange={handleChange} value={productoSeleccionado && productoSeleccionado.descripcion}/> <br/>
+            <TextField name="descripcion" className="inputMaterial" label="Descripcion" onChange={handleChange} value={productoSeleccionado && productoSeleccionado.descripcion}/> <br/>
             <br/>
             <br/>
             <div align="right">
@@ -313,7 +308,7 @@ function TypeProduct(props){
     )
 
     const bodyDelete=(
-        <div className={classes.modal}>
+        <div className="modal">
             <h3>Eliminar {title}</h3>
             <p>Está seguro de Eliminar este producto {productoSeleccionado && productoSeleccionado.nombre}?</p>
             <div align="right">
@@ -365,7 +360,7 @@ function TypeProduct(props){
     );
 
       return (
-    <ThemeProvider theme={theme}>
+    <>
     {errors?.map(function(error){
         return(
         <Alert severity="error"> {error} </Alert>
@@ -440,7 +435,7 @@ function TypeProduct(props){
             </Modal>
 
         </div>
-    </ThemeProvider>
+    </>
     )
 
 }

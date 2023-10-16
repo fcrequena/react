@@ -2,26 +2,21 @@ import {AuthContext } from '../context/authContext'
 import { useContext, useState } from "react";
 import { Alert, Autocomplete, Box, Button, Container, Grid, IconButton, Modal, Snackbar, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from "@mui/material"
 import * as React from 'react';
-import { ThemeProvider, createTheme, styled } from '@mui/material/styles';
-import {makeStyles} from "@mui/styles";
-import { styleModal, Item } from '../components/modal';
+
 import { useMutation } from '@apollo/react-hooks';
 import { REPORT_MONTH, GET_POINT_SALE_USER } from '../gql/mutation';
 import MyTitle from '../components/title';
 import { Delete, Edit } from '@mui/icons-material';
 import SpanningTable from '../components/tableDiary';
 import { useNavigate } from 'react-router-dom';
-
 import SimpleSnackbar from '../components/snackbars';
 
-const theme = createTheme();
-const useStyles = makeStyles((theme) => (styleModal));
+import '../css/styles.css';
 
 function Report(){
 
     let navigate = useNavigate();
     const context = useContext(AuthContext);
-    const classes = useStyles();
     const [ errors, setErrors ] = useState([]);
     const [ pointSaleData, setPointSaleData ] = useState([]);
     const [ reportData, setReportData ] = useState([]);
@@ -105,7 +100,7 @@ function Report(){
     }
 
     return (
-    <ThemeProvider theme={theme}>
+    < >
     {errors?.map(function(error){
             return(
                 <Alert severity="error">
@@ -126,7 +121,7 @@ function Report(){
             <Grid container direction="row"  spacing={4} align="center" sx={{ borderBottom: "1px solid grey" }}>
                 { isLoggeIn === true ?
                         <Grid item xs={3}>
-                            <Item >
+                            
                                 <Autocomplete
                                     {...defaultPropsPointSale}
                                     id="punto_venta"
@@ -145,12 +140,12 @@ function Report(){
                                         <TextField {...params} label="Seleccione punto venta" />
                                         )}
                                         />
-                            </Item>
+                            
                         </Grid>
                 : <div></div> }   
                 { isLoggeIn === true ?  
                         <Grid item xs={3}>
-                            <Item >
+                            
                                 <TextField
                                     fullWidth
                                     type="date"
@@ -161,13 +156,13 @@ function Report(){
                                     label="Fecha Inicio" 
                                     onChange={handleChange}
                                 /> 
-                            </Item>
+                            
 
                         </Grid>
                 : <div></div> }   
                 { isLoggeIn === true ?  
                         <Grid item xs={3}>
-                            <Item >
+                            
                                 <TextField
                                     fullWidth
                                     InputLabelProps={{
@@ -178,15 +173,15 @@ function Report(){
                                     label="Fecha Finalización" 
                                     onChange={handleChange}
                                 /> 
-                            </Item>
+                            
 
                         </Grid>
                 : <div></div> }
                 { isLoggeIn === true ?  
                         <Grid item xs={3} >
-                            <Item style={{ flex: 1, justifyContent: 'center', alignItems:"center", lineHeight:"57px" }}>
+                            
                                 <Button variant="contained" onClick={getReport} color="success">Buscar</Button>
-                            </Item>
+                            
                         </Grid>
                 : <div></div> }   
             </Grid>
@@ -195,7 +190,7 @@ function Report(){
         : <div></div> } 
         </Container>
             
-    </ThemeProvider>
+    </>
     )
     
 }

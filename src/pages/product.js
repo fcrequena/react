@@ -7,8 +7,6 @@ import { TextField, Button, Container, Stack, Alert,
             Modal, Autocomplete,TablePagination
     } from "@mui/material";
 
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-import {makeStyles} from "@mui/styles";
 import {Edit, Delete, CheckBox } from '@mui/icons-material';
 
 import { useNavigate } from "react-router-dom";
@@ -17,20 +15,15 @@ import { CREATE_PRODUCT, EDIT_PRODUCT, DELETE_PRODUCT } from "../gql/mutation";
 import { GET_ALL_PRODUCT, GET_ALL_TYPE_PRODUCT, GET_PRODUCT_BYID } from "../gql/query";
 
 import MyTitle from "../components/title";
-import { styleModal } from "../components/modal";
 import SimpleSnackbar from "../components/snackbars";
-/* CONSULTAS DE GRAPHQL */
-const theme = createTheme();
 
-
-/* ESTILOS MODAL */
-const useStyles = makeStyles((theme) => (styleModal));
+import '../css/styles.css';
 
 
 function Product(props){
 
     const context = useContext(AuthContext)
-    const classes = useStyles();
+
     let navigate = useNavigate();
     const [ errors, setErrors] = useState([]);
     const [ title, setTitle ] = useState("Producto")
@@ -257,11 +250,11 @@ function Product(props){
     };
 
     const bodyCreate=(
-        <div className={classes.modal}>
+        <div className="modal">
             <h3>Crear {title}</h3>
-            <TextField name="nombre" className={classes.inputMaterial} label="Nombre" onChange={handleChange}/> <br/>
+            <TextField name="nombre" className="inputMaterial" label="Nombre" onChange={handleChange}/> <br/>
             <br/>
-            <TextField name="descripcion" className={classes.inputMaterial} label="Descripcion" onChange={handleChange}/> <br/>
+            <TextField name="descripcion" className="inputMaterial" label="Descripcion" onChange={handleChange}/> <br/>
             <br/>
             <Autocomplete
                 {...defaultProps}
@@ -305,11 +298,11 @@ function Product(props){
     )
 
     const bodyEdit=(
-        <div className={classes.modal}>
+        <div className="modal">
             <h3>Editar {title}</h3>
-            <TextField name="nombre" className={classes.inputMaterial} label="Nombre" onChange={handleChange} value={productoSeleccionado && productoSeleccionado.nombre}/> <br/>
+            <TextField name="nombre" className="inputMaterial" label="Nombre" onChange={handleChange} value={productoSeleccionado && productoSeleccionado.nombre}/> <br/>
             <br/>
-            <TextField name="descripcion" className={classes.inputMaterial} label="Descripcion" onChange={handleChange} value={productoSeleccionado && productoSeleccionado.descripcion}/> <br/>
+            <TextField name="descripcion" className="inputMaterial" label="Descripcion" onChange={handleChange} value={productoSeleccionado && productoSeleccionado.descripcion}/> <br/>
             <br/>
             <Autocomplete
                 {...defaultProps}
@@ -352,7 +345,7 @@ function Product(props){
     )
 
     const bodyDelete=(
-        <div className={classes.modal}>
+        <div className="modal">
             <h3>Eliminar {title}</h3>
             <p>Está seguro de Eliminar este {title} " {productoSeleccionado && productoSeleccionado.nombre} "?</p>
             <div align="right">
@@ -402,7 +395,7 @@ function Product(props){
         <TextField label="Buscar por nombre" value={filtro} onChange={handleFiltroChange} />
     );
     return (
-    <ThemeProvider theme={theme}>
+    <>
         {errors?.map(function(error){
                 return(
                     <Alert severity="error">
@@ -437,9 +430,9 @@ function Product(props){
                                 <TableCell>{console.descripcion}</TableCell>
                                 <TableCell>{console.activo == true ? "Activo" : "Inactivo"}</TableCell>
                                 <TableCell>
-                                    <Edit className="{styles.iconos}" onClick={() => seleccionarProducto(console, 'Editar')} />
+                                    <Edit className="iconos" onClick={() => seleccionarProducto(console, 'Editar')} />
                                     &nbsp;&nbsp;&nbsp;
-                                    <Delete className="{styles.iconos}" onClick={() => seleccionarProducto(console, 'Eliminar')} />        
+                                    <Delete className="iconos" onClick={() => seleccionarProducto(console, 'Eliminar')} />        
                                 </TableCell>
                             
                             </TableRow>
@@ -477,7 +470,7 @@ function Product(props){
             </Modal>
 
         </div>
-    </ThemeProvider>
+    </>
     )
 
 }

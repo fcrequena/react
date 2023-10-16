@@ -8,8 +8,6 @@ import { TextField, Button, Container, Stack, Alert,
             Modal, TablePagination, Tooltip
     } from "@mui/material";
 
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-import {makeStyles} from "@mui/styles";
 import {Edit, Delete } from '@mui/icons-material';
 import PasswordIcon from '@mui/icons-material/Password';
 import StorefrontIcon from '@mui/icons-material/Storefront';
@@ -20,20 +18,16 @@ import { GET_ALL_USER, GET_ALL_POINT_SALE, GET_ALL_TYPE_ROL} from "../gql/query"
 import { CREATE_USER, UPDATE_USER, DELETE_USER, UPDATE_PASSWORD, 
         CREATE_POINT_SALE_USER, CREATE_ROL_USER } from '../gql/mutation'
 import MyTitle from "../components/title";
-import { styleModal } from "../components/modal";
 import MultipleSelectChip from "../components/selectMultiple";
 import SimpleSnackbar from "../components/snackbars";
 
-/* CONSULTAS DE GRAPHQL */
-const theme = createTheme();
+import '../css/styles.css';
 
-/* ESTILOS MODAL */
-const useStyles = makeStyles((theme) => (styleModal));
+/* CONSULTAS DE GRAPHQL */
 
 function User(props){
 
     const context = useContext(AuthContext)
-    const classes = useStyles();
     let navigate = useNavigate();
 
     const [ errors, setErrors] = useState([]);
@@ -456,13 +450,13 @@ function User(props){
     const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
     const bodyCreate=(
-        <div className={classes.modal}>
+        <div className="modal">
             <h3>Crear {title}</h3>
-            <TextField name="nombre" className={classes.inputMaterial} label="Nombre" onChange={handleChange}/> <br/>
+            <TextField name="nombre" className="inputMaterial" label="Nombre" onChange={handleChange}/> <br/>
             <br/>
-            <TextField name="correo" className={classes.inputMaterial} label="cuenta" onChange={handleChange}/> <br/>
+            <TextField name="correo" className="inputMaterial" label="cuenta" onChange={handleChange}/> <br/>
             <br/>
-            <TextField name="contrasena" className={classes.inputMaterial} label="contraseña" onChange={handleChange}/> <br/>
+            <TextField name="contrasena" className="inputMaterial" label="contraseña" onChange={handleChange}/> <br/>
             <br/>
             <div align="right">
             <Stack direction="row" spacing={2} justifyContent="flex-end">
@@ -481,11 +475,11 @@ function User(props){
     )
 
     const bodyEdit=(
-        <div className={classes.modal}>
+        <div className="modal">
             <h3>Editar {title}</h3>
-            <TextField name="nombre" className={classes.inputMaterial} label="Nombre" onChange={handleChange} value={productoSeleccionado && productoSeleccionado.nombre}/> <br/>
+            <TextField name="nombre" className="inputMaterial" label="Nombre" onChange={handleChange} value={productoSeleccionado && productoSeleccionado.nombre}/> <br/>
             <br/>
-            <TextField name="correo" className={classes.inputMaterial} label="Cuenta" onChange={handleChange} value={productoSeleccionado && productoSeleccionado.correo}/> <br/>
+            <TextField name="correo" className="inputMaterial" label="Cuenta" onChange={handleChange} value={productoSeleccionado && productoSeleccionado.correo}/> <br/>
             <br/>
             <br/>
             <div align="right">
@@ -505,11 +499,11 @@ function User(props){
     )
 
     const bodyUpdatePassword=(
-        <div className={classes.modal}>
+        <div className="modal">
             <h3>Actualizar contraseña de {productoSeleccionado.nombre}</h3>
-            <TextField required type="password" name="contrasena" className={classes.inputMaterial} label="Ingrese contraseña" onChange={handleChange}/> <br/>
+            <TextField required type="password" name="contrasena" className="inputMaterial" label="Ingrese contraseña" onChange={handleChange}/> <br/>
             <br/>
-            <TextField required type="password" name="valcontrasena" className={classes.inputMaterial} label="Ingrese de nuevo su contraseña" onChange={handleChange}/> <br/>
+            <TextField required type="password" name="valcontrasena" className="inputMaterial" label="Ingrese de nuevo su contraseña" onChange={handleChange}/> <br/>
             <br/>
             
             <div align="right">
@@ -531,7 +525,7 @@ function User(props){
     )
     
     const bodyDelete=(
-        <div className={classes.modal}>
+        <div className="modal">
             <h3>Eliminar {title}</h3>
             <p>Está seguro de Eliminar este usuario {productoSeleccionado && productoSeleccionado.nombre}?</p>
             <div align="right">
@@ -560,7 +554,7 @@ function User(props){
     };
 
     const bodyPointSale=(
-        <div className={classes.modal}>
+        <div className="modal">
             <h3>Agregar accesos a {productoSeleccionado.nombre}</h3>
             <Alert severity="info">En esta ventana agrega los puntos de venta a los que tendra acceso el usuario.</Alert>
             <br/>
@@ -586,7 +580,7 @@ function User(props){
     )
 
     const bodyTypeRol=(
-        <div className={classes.modal}>
+        <div className="modal">
             <h3>Agregar roles a {productoSeleccionado.nombre}</h3>
             <Alert severity="info">En esta ventana agrega los roles al usuario. Esto indicara que acciones podra realizar el usuario.</Alert>
             <br/>
@@ -641,7 +635,7 @@ function User(props){
     );
 
       return (
-    <ThemeProvider theme={theme}>
+    <>
         {errors?.map(function(error){
             return(
             <Alert severity="error"> {error} </Alert>
@@ -750,7 +744,7 @@ function User(props){
             </Modal>
 
         </div>
-    </ThemeProvider>
+    </>
     )
 
 }

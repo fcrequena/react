@@ -7,9 +7,7 @@ import { TextField, Button, Container, Stack, Alert,
             Modal, Autocomplete, 
             Accordion, AccordionSummary, AccordionDetails,TablePagination
     } from "@mui/material";
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-import {makeStyles} from "@mui/styles";
-import AddIcon from '@mui/icons-material/Add';
+
 import {Edit, Delete } from '@mui/icons-material';
 import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
 
@@ -20,19 +18,15 @@ import { Fragment } from "react";
 
 import { CREATE_POINT_SALE, EDIT_POINT_SALE, DELETE_POINT_SALE, CREATE_POINT_PRODUCTO } from "../gql/mutation";
 import { GET_ALL_POINT_SALE, GET_ALL_PRODUCT } from "../gql/query";
-import { styleModal } from "../components/modal";
+
 import SimpleSnackbar from "../components/snackbars";
-/* CONSULTAS DE GRAPHQL */
-const theme = createTheme();
 
-/* ESTILOS MODAL */
-const useStyles = makeStyles((theme) => (styleModal));
-
+import '../css/styles.css';
 
 function PointSale(props){
 
     const context = useContext(AuthContext)
-    const classes = useStyles();
+
     let navigate = useNavigate();
     const [ errors, setErrors] = useState([]);
     const [ title, setTitle ] = useState("Punto de venta")
@@ -316,11 +310,11 @@ function PointSale(props){
     };
 
     const bodyCreate=(
-        <div className={classes.modal}>
+        <div className="modal">
             <h3>Crear {title}</h3>
-            <TextField name="nombre" className={classes.inputMaterial} label="Nombre" onChange={handleChange}/> <br/>
+            <TextField name="nombre" className="inputMaterial" label="Nombre" onChange={handleChange}/> <br/>
             <br/>
-            <TextField name="descripcion" className={classes.inputMaterial} label="Descripcion" onChange={handleChange}/> <br/>
+            <TextField name="descripcion" className="inputMaterial" label="Descripcion" onChange={handleChange}/> <br/>
 
             <br/>
             <br/>
@@ -336,11 +330,11 @@ function PointSale(props){
     )
 
     const bodyEdit=(
-        <div className={classes.modal}>
+        <div className="modal">
             <h3>Editar {title}</h3>
-            <TextField name="nombre" className={classes.inputMaterial} label="Nombre" onChange={handleChange} value={productoSeleccionado && productoSeleccionado.nombre}/> <br/>
+            <TextField name="nombre" className="inputMaterial" label="Nombre" onChange={handleChange} value={productoSeleccionado && productoSeleccionado.nombre}/> <br/>
             <br/>
-            <TextField name="descripcion" className={classes.inputMaterial} label="Descripcion" onChange={handleChange} value={productoSeleccionado && productoSeleccionado.descripcion}/> <br/>
+            <TextField name="descripcion" className="inputMaterial" label="Descripcion" onChange={handleChange} value={productoSeleccionado && productoSeleccionado.descripcion}/> <br/>
 
             <br/>
             <br/>
@@ -356,7 +350,7 @@ function PointSale(props){
     )
 
     const bodyDelete=(
-        <div className={classes.modal}>
+        <div className="modal">
             <h3>Eliminar {title}</h3>
             <p>Está seguro de Eliminar este producto {productoSeleccionado && productoSeleccionado.nombre}?</p>
             <div align="right">
@@ -371,7 +365,7 @@ function PointSale(props){
     )
 
     const bodyAdd=(
-        <div className={classes.modal}>
+        <div className="modal">
             <h3>Agregar producto a {title}</h3>
             <Autocomplete
                 {...defaultProps}
@@ -398,7 +392,7 @@ function PointSale(props){
                 type="number"
                 inputProps={{ step: '0.01' }}
                 name="precio" 
-                className={classes.inputMaterial} 
+                className="inputMaterial" 
                 label="Precio" 
                 onChange={handleChange} 
                 
@@ -455,7 +449,7 @@ function PointSale(props){
     );
 
     return (
-    <ThemeProvider theme={theme}>
+    <>
     {errors?.map(function(error){
         return(
             <Alert severity="error">{error}</Alert>
@@ -520,11 +514,11 @@ function PointSale(props){
                         </Accordion>
                         </TableCell>
                         <TableCell>
-                            <Edit className="{styles.iconos}" onClick={() => seleccionarProducto(row, 'Editar')} />
+                            <Edit className="iconos" onClick={() => seleccionarProducto(row, 'Editar')} />
                             &nbsp;&nbsp;&nbsp;
-                            <Delete className="{styles.iconos}" onClick={() => seleccionarProducto(row, 'Eliminar')} />        
+                            <Delete className="iconos" onClick={() => seleccionarProducto(row, 'Eliminar')} />        
                             &nbsp;&nbsp;&nbsp;
-                            <LibraryAddIcon className="{styles.iconos}" onClick={()=> seleccionarProducto(row, 'Agregar')}></LibraryAddIcon>
+                            <LibraryAddIcon className="iconos" onClick={()=> seleccionarProducto(row, 'Agregar')}></LibraryAddIcon>
                         </TableCell>
                     </TableRow>
                     </Fragment>
@@ -567,7 +561,7 @@ function PointSale(props){
             {bodyAdd}
         </Modal>
         </div>
-    </ThemeProvider>
+    </>
     )
 
 }

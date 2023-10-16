@@ -2,9 +2,7 @@ import {AuthContext } from '../context/authContext'
 import { useContext, useState } from "react";
 import { Alert, Autocomplete, Box, Button, Container, Grid, IconButton, Modal, Snackbar, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from "@mui/material"
 import * as React from 'react';
-import { ThemeProvider, createTheme, styled } from '@mui/material/styles';
-import {makeStyles} from "@mui/styles";
-import { styleModal, Item } from '../components/modal';
+
 import { useMutation } from '@apollo/react-hooks';
 import { CREATE_JOURNAL, CREATE_JOURNAL_DETAIL, DELETE_JOURNAL_DETAIL, EDIT_JOURNAL_DETAIL, GET_JOURNAL_DETAIL_FOR_DAY, GET_POINT_SALE_USER } from '../gql/mutation';
 import MyTitle from '../components/title';
@@ -12,14 +10,13 @@ import { Delete, Edit } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 
 import SimpleSnackbar from '../components/snackbars';
+import '../css/styles.css';
 
-const theme = createTheme();
-const useStyles = makeStyles((theme) => (styleModal));
 
 function Diary(){
     let navigate = useNavigate();
     const context = useContext(AuthContext);
-    const classes = useStyles();
+
     const [ errors, setErrors ] = useState([]);
     const [ pointSaleData, setPointSaleData ] = useState([]);
     const [ pointSaleSelected, setPointSaleSelected ] = useState(null);
@@ -284,7 +281,7 @@ function Diary(){
 
 
     const bodyDelete=(
-        <div className={classes.modal}>
+        <div className="modal">
             <h3>Eliminacion de registro.</h3>
             <p> Esta seguro que desea eliminar el registro de "{productSeleccionado.nombre_producto}" con la cantidad de "{productSeleccionado.precio}" ?</p>
             <br/>
@@ -298,7 +295,7 @@ function Diary(){
     )
 
     const bodyEdit=(
-        <div className={classes.modal}>
+        <div className="modal">
             <h3>Editar el registro.</h3>
             <br/>
             <TextField 
@@ -340,7 +337,7 @@ function Diary(){
     )
 
     const bodyCreate=(
-        <div className={classes.modal}>
+        <div className="modal">
             <h3>Seleccione Punto de venta</h3>
  
             <Autocomplete
@@ -389,7 +386,7 @@ function Diary(){
     }
 
     return (
-    <ThemeProvider theme={theme}>
+    <>
     {errors?.map(function(error){
             return(
                 <Alert severity="error">
@@ -411,7 +408,7 @@ function Diary(){
             <Grid container direction="row" justifyContent="center" alignItems="stretch" spacing={1}>
         { isLoggeIn === true ?
                 <Grid item xs={2}>
-                    <Item style={{ height: 80 }} >
+                    
                         <TextField 
                             type="number" 
                             inputProps={{ step: '0' }}
@@ -420,12 +417,12 @@ function Diary(){
                             onChange={handleChange}
                             value={ productSeleccionado.cantidad ? productSeleccionado.cantidad : 1}
                             /> 
-                    </Item>
+                    
                 </Grid>
         : <div></div> }  
         { isLoggeIn === true ?
                 <Grid item xs={4}>
-                    <Item style={{ height: 80 }}>
+                    
                         <Autocomplete
                             {...defaultPropsProduct}
                             id="productoo"
@@ -444,12 +441,12 @@ function Diary(){
                                 <TextField {...params} label="Seleccione un producto" />
                                 )}
                                 />
-                    </Item>
+                    
                 </Grid>
         : <div></div> }   
         { isLoggeIn === true ?  
                 <Grid item xs={4}>
-                    <Item style={{ height: 80 }}>
+                    
                         <TextField multiline={true}
                         fullWidth
                             type="text"
@@ -458,15 +455,15 @@ function Diary(){
                             helperText="Descripción si es otros ingresos u otros egresos."
                             onChange={handleChange}
                             /> 
-                    </Item>
+                    
 
                 </Grid>
         : <div></div> }   
         { isLoggeIn === true ?  
                 <Grid item xs="auto">
-                    <Item style={{ height: 80, alignItems: "center", display: "flex"}}>
+                    
                         <Button variant="contained" onClick={funCreateDetail} color="success">Agregar</Button>
-                    </Item>
+                    
                 </Grid>
         : <div></div> }   
             </Grid>
@@ -496,9 +493,9 @@ function Diary(){
                                 <TableCell>{console.tipo_producto == true ? "Ingreso" : "Egreso"}</TableCell>
                                 <TableCell>{console.cantidad * console.precio}</TableCell>
                                 <TableCell>
-                                    <Edit className="{styles.iconos}"  onClick={ () => funSeleccionarRegistro(console, 'Editar')} />
+                                    <Edit className="icono"  onClick={ () => funSeleccionarRegistro(console, 'Editar')} />
                                     &nbsp;&nbsp;&nbsp;
-                                    <Delete className="{styles.iconos}" onClick={ () => funSeleccionarRegistro(console, 'Eliminar')} />        
+                                    <Delete className="icono" onClick={ () => funSeleccionarRegistro(console, 'Eliminar')} />        
                                 </TableCell>
                             
                             </TableRow>
@@ -527,7 +524,7 @@ function Diary(){
             {bodyEdit}
         </Modal>
             
-    </ThemeProvider>
+    </>
     )
     
 }
