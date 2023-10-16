@@ -6,6 +6,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import { TableViewOutlined } from '@mui/icons-material';
 
 const TAX_RATE = 0.07;
 
@@ -36,33 +37,70 @@ const invoiceSubtotal = subtotal(rows);
 const invoiceTaxes = TAX_RATE * invoiceSubtotal;
 const invoiceTotal = invoiceTaxes + invoiceSubtotal;
 
-export default function SpanningTable() {
+export default function SpanningTable(props) {
+  const { datos } = props;
+  console.log({datos: datos[0].tipo_producto})
+  const [ tipo, setTipo ] = React.useState([]);
+  const [ producto, setProducto ] = React.useState([]);
+
+  
+  React.useEffect(() => {
+    console.log("pancho tabla")
+    setTipo(datos[0].tipo_producto);
+  },[])
+
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 700 }} aria-label="spanning table">
         <TableHead>
           <TableRow>
-            <TableCell align="center" colSpan={3}>
-              Details
+            <TableCell align="center" colSpan={4}>
+              Reporte Mensual 
             </TableCell>
-            <TableCell align="right">Price</TableCell>
           </TableRow>
           <TableRow>
-            <TableCell>Desc</TableCell>
-            <TableCell align="right">Qty.</TableCell>
-            <TableCell align="right">Unit</TableCell>
-            <TableCell align="right">Sum</TableCell>
+            <TableCell align="center" colSpan={2}>
+              Comunidad:
+            </TableCell>
+            <TableCell align="center" colSpan={2}>
+              Nombre del punto de venta
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell align="center" colSpan={2}>
+              Mes de: 
+            </TableCell>
+            <TableCell align="center" colSpan={2}>
+                NOmbre del mes
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell align="center">Personas</TableCell>
+            <TableCell align="center">Cantidad</TableCell>
+            <TableCell align="center">Descripcion</TableCell>
+            <TableCell align="center">Total</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
-            <TableRow key={row.desc}>
-              <TableCell>{row.desc}</TableCell>
-              <TableCell align="right">{row.qty}</TableCell>
-              <TableCell align="right">{row.unit}</TableCell>
-              <TableCell align="right">{ccyFormat(row.price)}</TableCell>
-            </TableRow>
+          
+          {tipo.map((row) => (
+            <TableRow key={row.codigo}>
+              <TableCell align="center">{}</TableCell>
+              <TableCell align="center">{}</TableCell>
+              <TableCell align="left">{row.nombre}</TableCell>
+              <TableCell align="center">{}</TableCell>
+            </TableRow> 
           ))}
+          
+          <TableRow key={1}>
+              <TableCell>{"Columna 1" }</TableCell>
+                <TableCell>{"Columna 2" }</TableCell>
+                <TableCell>{"Columna 2" }</TableCell>
+                <TableCell>{"Columna 2" }</TableCell>
+            </TableRow>
+          
+
+
           <TableRow>
             <TableCell rowSpan={3} />
             <TableCell colSpan={2}>Subtotal</TableCell>

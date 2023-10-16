@@ -11,7 +11,7 @@ import Product from './pages/product';
 import TypeProduct from './pages/product_type';
 import PointSale from './pages/point_sale';
 import Diary from './pages/diary';
-
+import Report from './pages/report';
 function App() {
   return (
     <div>
@@ -20,12 +20,12 @@ function App() {
         <Route path="/" element={<Homepage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        {/* <Route path='/user' element={<User />} /> */}
         <Route path='/product' element={<Product />} />
         <Route path='/typeproduct' element={<TypeProduct />} />
         <Route path='/pointsale' element={<PointSale />} />
         <Route path='/user' element={<User />} />
         <Route path='/diary' element={<Diary/>} />
+        <Route path='/report' element={<Report />} />
       </Routes>
     </div>
   );

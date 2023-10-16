@@ -301,3 +301,42 @@ mutation mutation (
 }
 `
 
+export const REPORT_MONTH = gql`
+mutation Mutation (
+		$codigo_punto_venta: Int! 
+		$fecha_inicio: String! 
+		$fecha_fin: String!) {
+	getReportJournal(
+		codigo_punto_venta: $codigo_punto_venta
+		fecha_inicio: $fecha_inicio
+		fecha_fin: $fecha_fin
+	){
+			codigo
+			nombre
+		 descripcion
+		  activo
+		cantidad
+		 fecha
+		fondo {
+			fon_codigo
+			fon_nombre
+			fon_porcentaje
+			fon_es_fondo
+		}
+		tipo_producto{
+			codigo
+			nombre
+			descripcion
+			es_producto
+			es_costo
+			productos{
+			 codigo_producto
+			 nombre_producto
+			 precio
+			 cantidad
+			 total
+		}
+		}
+		
+	}
+}`

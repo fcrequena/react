@@ -70,9 +70,7 @@ function NavBar() {
                             <MenuItem onClick={handleClose}><Link to="/PointSale" style={{textDecoration: "none"}}> Punto de Venta </Link></MenuItem>
                             <MenuItem onClick={handleClose}><Link to="/User" style={{textDecoration: "none"}}> Usuarios </Link></MenuItem>
                             <Divider />
-                            <MenuItem onClick={handleClose}>
-                                Reportes
-                            </MenuItem>
+                            <MenuItem onClick={handleClose}><Link to="/Report" style={{textDecoration: "none"}}> Reportes </Link></MenuItem>
                         </Menu>
                     </Box>
                     </>
