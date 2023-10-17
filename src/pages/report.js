@@ -10,7 +10,7 @@ import { Delete, Edit } from '@mui/icons-material';
 import SpanningTable from '../components/tableDiary';
 import { useNavigate } from 'react-router-dom';
 import SimpleSnackbar from '../components/snackbars';
-
+import MyTable from '../components/tableDiary'
 import '../css/styles.css';
 
 function Report(){
@@ -34,6 +34,7 @@ function Report(){
     const { user, logout} = useContext(AuthContext);
      
     const handleChange = e => {
+        setReportData([]);
         const {name, value } = e.target;
         setProductoSeleccionado(prevState => ({
             ...prevState,
@@ -52,10 +53,7 @@ function Report(){
             fecha_fin: productSeleccionado.fecha_fin
         },
         onCompleted: (data) => {
-            console.log({llamada: data.getReportJournal})
             setReportData(data.getReportJournal);
-            console.log("pancho 2")
-            // setErrors([]) 
         }
     });
 
@@ -66,8 +64,6 @@ function Report(){
         variables: { codigo: user?.codigo},
         onCompleted: (data) => {
             setPointSaleData(data.getPointSaleById);
-            console.log("pancho 3")
-            // setIsLoggeIn(false);
             setProductoSeleccionado({
                 punto_venta: 0,
                 fecha_inicio: '',
@@ -86,12 +82,10 @@ function Report(){
 
     React.useEffect(() => {
         if(user === null) {navigate('/');}
-        console.log("pancho 1")
         selectPointSale();
     }, [])
     
     const closeSnackBars = () => {
-        console.log("pancho 4")
         setMostrarSnackBar({
             mensaje: "",
             esError: true,
@@ -129,6 +123,7 @@ function Report(){
                                     clearOnEscape
                                     
                                     onChange={(event, newValue) => {
+                                        setReportData([]);
                                         if(newValue !== null ){
                                             setProductoSeleccionado(prevState=>({
                                                 ...prevState,
@@ -186,7 +181,7 @@ function Report(){
                 : <div></div> }   
             </Grid>
         { isLoggeIn === true ?  
-            reportData.length === 0 ? "" : <SpanningTable datos={reportData}></SpanningTable>
+                reportData.length === 0 ? "" : <MyTable datos={reportData} finicio={productSeleccionado.fecha_inicio} ffin={productSeleccionado.fecha_fin} ></MyTable>
         : <div></div> } 
         </Container>
             

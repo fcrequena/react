@@ -305,18 +305,19 @@ export const REPORT_MONTH = gql`
 mutation Mutation (
 		$codigo_punto_venta: Int! 
 		$fecha_inicio: String! 
-		$fecha_fin: String!) {
+		$fecha_fin: String!
+	) {
 	getReportJournal(
 		codigo_punto_venta: $codigo_punto_venta
 		fecha_inicio: $fecha_inicio
 		fecha_fin: $fecha_fin
 	){
-			codigo
-			nombre
-		 descripcion
-		  activo
+		codigo
+		nombre
+		descripcion
+		activo
 		cantidad
-		 fecha
+		fecha
 		fondo {
 			fon_codigo
 			fon_nombre
@@ -329,14 +330,14 @@ mutation Mutation (
 			descripcion
 			es_producto
 			es_costo
+			orden
 			productos{
-			 codigo_producto
-			 nombre_producto
-			 precio
-			 cantidad
-			 total
+				codigo_producto
+				nombre_producto
+				precio
+				cantidad
+				total
 		}
-		}
-		
 	}
+}
 }`
