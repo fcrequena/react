@@ -341,3 +341,38 @@ mutation Mutation (
 	}
 }
 }`
+
+export const DELETE_PRODUCT_POINT_SALE = gql`
+mutation mutation ($codigo: Int!) {
+	deleteProductPointSaleById(codigo: $codigo){
+		  codigo 
+		  producto
+		   punto_venta
+		   precio
+		   activo
+	  }
+  }
+`
+
+export const UPDATE_PRODUCT_POINT_SALE = gql`
+mutation mutation (
+	$codigo: Int!, 
+	$producto: Int!, 
+	$punto_venta: Int!
+	$precio: Float!
+) {
+	updateProductPointSale( 
+		codigo: $codigo
+		producto: $producto
+		punto_venta: $punto_venta
+		precio: $precio
+		activo: true
+	){
+		codigo
+		producto
+		punto_venta
+		precio
+		activo
+	}
+}
+`

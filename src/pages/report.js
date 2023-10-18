@@ -53,6 +53,7 @@ function Report(){
             fecha_fin: productSeleccionado.fecha_fin
         },
         onCompleted: (data) => {
+            setErrors([])
             setReportData(data.getReportJournal);
         }
     });
@@ -64,11 +65,6 @@ function Report(){
         variables: { codigo: user?.codigo},
         onCompleted: (data) => {
             setPointSaleData(data.getPointSaleById);
-            setProductoSeleccionado({
-                punto_venta: 0,
-                fecha_inicio: '',
-                fecha_fin: ''
-            });
             setErrors([]) 
         }
     });
@@ -175,7 +171,7 @@ function Report(){
                 { isLoggeIn === true ?  
                         <Grid item xs={3} >
                             
-                                <Button variant="contained" onClick={getReport} color="success">Buscar</Button>
+                                <Button variant="contained" onClick={getReport} color="success">Generar</Button>
                             
                         </Grid>
                 : <div></div> }   

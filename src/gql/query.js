@@ -19,7 +19,7 @@ export const GET_PRODUCT_BYID = gql`
 export const GET_ALL_POINT_SALE = gql`
 query AllPointSale{
     getAllPointSale{ codigo nombre descripcion activo
-        productos{codigo nombre descripcion precio}}
+        productos{codigo_punto_venta codigo nombre descripcion precio}}
 }
 `
 export const GET_ALL_USER = gql`

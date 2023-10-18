@@ -16,7 +16,13 @@ import MyTitle from "../components/title";
 
 import { Fragment } from "react";
 
-import { CREATE_POINT_SALE, EDIT_POINT_SALE, DELETE_POINT_SALE, CREATE_POINT_PRODUCTO } from "../gql/mutation";
+import { CREATE_POINT_SALE, 
+            EDIT_POINT_SALE, 
+            DELETE_POINT_SALE, 
+            CREATE_POINT_PRODUCTO, 
+            DELETE_PRODUCT_POINT_SALE, 
+            UPDATE_PRODUCT_POINT_SALE 
+        } from "../gql/mutation";
 import { GET_ALL_POINT_SALE, GET_ALL_PRODUCT } from "../gql/query";
 
 import SimpleSnackbar from "../components/snackbars";
@@ -35,6 +41,8 @@ function PointSale(props){
     const [ modalCreate, setModalCreate ] = useState(false);
     const [ modalEdit, setModalEdit ] = useState(false);
     const [ modalDelete, setModalDelete ] = useState(false);
+    const [ modalEditProducto, setModalEditProducto ] = useState(false);
+    const [ modalDeleteProducto, setModalDeleteProducto ] = useState(false);
     const [ modalAdd, setModalAdd ] = useState(false);
     const [ productoSeleccionado, setProductoSeleccionado ] = useState({
         nombre: '',
@@ -43,6 +51,8 @@ function PointSale(props){
     const [ tipoSeleccionado, setTipoSeleccionado ] = useState(null);
     const [expandedRow, setExpandedRow] = useState(null);
     const [filtro, setFiltro] = useState('');
+    const [filtroProducto, setFiltroProducto] = useState('');
+
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [ mostrarSnackBar, setMostrarSnackBar ] = useState({
@@ -153,6 +163,21 @@ function PointSale(props){
         editProducto();           
     }
 
+    const funEditProductoPuntoVenta= () =>
+    {
+        const { nombre, descripcion, precio} = productoSeleccionado;
+        if(precio === undefined || precio <= 0){
+            setMostrarSnackBar({
+                mensaje: "Ingrese una cantidad mayor a cero.",
+                esError: true,
+                mostrar: true
+            });
+            return;
+        }
+        
+        editProductoPuntoVenta();           
+    }
+
     const [editProducto, { editLoading }] = useMutation(EDIT_POINT_SALE,{
         onError({ graphQLErrors }){
             setErrors(graphQLErrors);
@@ -182,11 +207,6 @@ function PointSale(props){
     });
 
 
-    function funDeleteProducto()
-    {
-        deleteProducto();           
-    }
-
     const [deleteProducto, { deleteLoading }] = useMutation(DELETE_POINT_SALE,{
         onError({ graphQLErrors }){
             setErrors(graphQLErrors);
@@ -211,6 +231,69 @@ function PointSale(props){
                         mostrar: true
                     });
                 openCloseModalDelete();
+        }
+    });
+
+    const [deleteProductoPuntoVenta, { deleteProductoPuntoVentaLoading }] = useMutation(DELETE_PRODUCT_POINT_SALE,{
+        onError({ graphQLErrors }){
+            setErrors(graphQLErrors);
+        },
+        variables: {codigo: productoSeleccionado.codigo_punto_venta} ,
+        onCompleted: (data) => {
+                var puntoVentas = [...pointSaleData];
+                var editado = data.deleteProductPointSaleById;
+            
+                const puntoVentasActualizados = puntoVentas.map(puntoVenta => {
+                    const productosActualizados = puntoVenta.productos.filter(producto => producto.codigo_punto_venta !== editado.codigo);
+                    return { ...puntoVenta, productos: productosActualizados };
+                  });
+
+                setPointSaleData(puntoVentasActualizados);
+                setMostrarSnackBar({
+                    mensaje: "Registro eliminado con exito.",
+                    esError: false,
+                    mostrar: true
+                });
+                openCloseModalDeleteProducto();
+        }
+    });
+
+    const [editProductoPuntoVenta, { editProductoPuntoVentaLoading }] = useMutation(UPDATE_PRODUCT_POINT_SALE,{
+        onError({ graphQLErrors }){
+            setErrors(graphQLErrors);
+        },
+        variables: {codigo: productoSeleccionado.codigo_punto_venta,
+                    producto: productoSeleccionado.codigo,
+                    punto_venta: 1,
+                    precio: parseFloat(productoSeleccionado.precio)
+                    } ,
+        onCompleted: (data) => {
+                var puntoVentas = [...pointSaleData];
+                var editado = data.updateProductPointSale;
+                let nombre_producto = allProductData.find((valor)=> valor.codigo === editado.producto);
+
+                const puntoVentasActualizados = puntoVentas.map(puntoVenta => {
+                    const productosActualizados = puntoVenta.productos.filter(producto => producto.codigo_punto_venta !== editado.codigo);
+                    if(puntoVenta.codigo === editado.punto_venta){
+                        return { ...puntoVenta, productos: productosActualizados.concat({
+                            codigo: editado.producto,
+                            codigo_punto_venta: editado.codigo,
+                            descripcion: nombre_producto.descripcion,
+                            nombre: nombre_producto.nombre,
+                            precio: editado.precio
+                        }) };
+                    }else{
+                        return { ...puntoVenta };
+                    }
+                });
+
+                setPointSaleData(puntoVentasActualizados);
+                setMostrarSnackBar({
+                    mensaje: "Registro actualizado con exito.",
+                    esError: false,
+                    mostrar: true
+                });
+                openCloseModalEditProducto();
         }
     });
 
@@ -243,6 +326,23 @@ function PointSale(props){
                      codigo_punto_venta: productoSeleccionado.codigo,
                     precio: parseFloat(productoSeleccionado.precio)},
         onCompleted: (data) => {
+            let respuesta = data.createProductPointSale;
+            let nombre_producto = allProductData.find((valor)=> valor.codigo === respuesta.producto);
+            let newProductosPointSale = pointSaleData.map((puntoVenta) => {
+                if(puntoVenta.codigo === respuesta.punto_venta){
+                    return { ...puntoVenta, productos: puntoVenta.productos.concat({
+                        codigo: respuesta.producto,
+                        codigo_punto_venta: respuesta.codigo,
+                        descripcion: nombre_producto.descripcion,
+                        nombre: nombre_producto.nombre,
+                        precio: respuesta.precio
+                    }) };
+                }else{
+                    return { ...puntoVenta };
+                }
+            })
+
+            setPointSaleData(newProductosPointSale);
             setMostrarSnackBar({
                 mensaje: "Registro asignado con exito.",
                 esError: false,
@@ -283,6 +383,18 @@ function PointSale(props){
         setModalDelete(!modalDelete);
     }
 
+    const openCloseModalEditProducto=()=>{
+        setErrors([]);
+        setTipoSeleccionado(null);
+        setModalEditProducto(!modalEditProducto);
+    }
+
+    const openCloseModalDeleteProducto=()=>{
+        setErrors([]);
+        setTipoSeleccionado(null);
+        setModalDeleteProducto(!modalDeleteProducto);
+    }
+
     const openCloseModalAdd=()=>{
         setErrors([]);
         setTipoSeleccionado(null);
@@ -295,9 +407,13 @@ function PointSale(props){
         setTipoSeleccionado(tipo);
         setProductoSeleccionado(producto);
         if (caso == 'Editar') {
-            setModalEdit(true)
+            setModalEdit(true);
         }  else if (caso == 'Eliminar'){
-            setModalDelete(true)
+            setModalDelete(true);
+        } else if (caso == 'EditarProducto'){
+            setModalEditProducto(true);
+        } else if (caso == 'EliminarProducto') {
+            setModalDeleteProducto(true);
         } else{
             setModalAdd(true)
         }
@@ -357,7 +473,42 @@ function PointSale(props){
             <Stack direction="row" spacing={2} justifyContent="flex-end">
 
                 <Button variant="contained" onClick={openCloseModalDelete}>No</Button>
-                <Button variant="contained" onClick={funDeleteProducto} color="primary">Sí</Button>
+                <Button variant="contained" onClick={deleteProducto} color="primary">Sí</Button>
+            </Stack>
+            </div>
+        </div>
+        
+    )
+
+    const bodyEditProducto=(
+        <div className="modal">
+            <h3>Editar producto asociado</h3>
+            <TextField disabled className="inputMaterial" label="Nombre" value={productoSeleccionado && productoSeleccionado.nombre}/> <br/>
+            <br/>
+            <TextField type="number" name="precio" className="inputMaterial" label="Precio" onChange={handleChange} value={productoSeleccionado && productoSeleccionado.precio}/> <br/>
+
+            <br/>
+            <br/>
+            <div align="right">
+            <Stack direction="row" spacing={2} justifyContent="flex-end">
+
+                <Button variant="contained" onClick={openCloseModalEditProducto} color="error">Cerrar</Button>
+                <Button variant="contained" onClick={funEditProductoPuntoVenta} color="primary">Editar</Button>
+            </Stack>
+            </div>
+        </div>
+        
+    )
+
+    const bodyDeleteProducto=(
+        <div className="modal">
+            <h3>Eliminar producto asociado</h3>
+            <p>Está seguro de Eliminar este producto {productoSeleccionado && productoSeleccionado.nombre}?</p>
+            <div align="right">
+            <Stack direction="row" spacing={2} justifyContent="flex-end">
+
+                <Button variant="contained" onClick={openCloseModalDeleteProducto}>No</Button>
+                <Button variant="contained" onClick={deleteProductoPuntoVenta} color="primary">Sí</Button>
             </Stack>
             </div>
         </div>
@@ -424,6 +575,10 @@ function PointSale(props){
     const handleFiltroChange = (event) => {
         setFiltro(event.target.value);
     };
+
+    const handleFiltroProductoChange = (event) => {
+        setFiltroProducto(event.target.value);
+    };
     
     // Filtrar los datos basados en el filtro de búsqueda
     const datosFiltrados = pointSaleData.filter((dato) =>
@@ -482,9 +637,19 @@ function PointSale(props){
                         <TableCell>{row.nombre}</TableCell>
                         <TableCell>{row.descripcion}</TableCell>
                         <TableCell>{row.activo == true ? "Activo" : "Inactivo"}</TableCell>
-
                         <TableCell>
-                        <Accordion  color="primary" variant="outlined"
+
+                        </TableCell>
+                        <TableCell>
+                            <Edit className="iconos" onClick={() => seleccionarProducto(row, 'Editar')} />
+                            &nbsp;&nbsp;&nbsp;
+                            <Delete className="iconos" onClick={() => seleccionarProducto(row, 'Eliminar')} />        
+                            &nbsp;&nbsp;&nbsp;
+                            <LibraryAddIcon className="iconos" onClick={()=> seleccionarProducto(row, 'Agregar')}></LibraryAddIcon>
+                        </TableCell>
+                    </TableRow>
+                    <TableRow>
+                        <TableCell colSpan={5}><Accordion  color="primary" variant="outlined"
                             expanded={index === expandedRow}
                             onChange={() => handleExpandRow(index)}
                         >
@@ -495,6 +660,7 @@ function PointSale(props){
                                         <TableRow>
                                             <TableCell>Nombre</TableCell>
                                             <TableCell>precio</TableCell>
+                                            <TableCell>Acciones</TableCell>
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
@@ -503,22 +669,18 @@ function PointSale(props){
                                                 <TableRow>
                                                     <TableCell>{descripcion.nombre}</TableCell>
                                                     <TableCell>{descripcion.precio}</TableCell>
+                                                    <TableCell>
+                                                        <Edit className="iconos" onClick={() => seleccionarProducto(descripcion, 'EditarProducto')} />
+                                                        &nbsp;&nbsp;&nbsp;
+                                                        <Delete className="iconos" onClick={() => seleccionarProducto(descripcion, 'EliminarProducto')} />
+                                                    </TableCell>
                                                 </TableRow>
-                                                {/* {descIndex < row.productos.length - 1 && <hr />}  */}
-                                                {/* Línea divisoria */}
                                             </>
                                         ))}
                                     </TableBody>
                                 </Table>
                             </AccordionDetails>
-                        </Accordion>
-                        </TableCell>
-                        <TableCell>
-                            <Edit className="iconos" onClick={() => seleccionarProducto(row, 'Editar')} />
-                            &nbsp;&nbsp;&nbsp;
-                            <Delete className="iconos" onClick={() => seleccionarProducto(row, 'Eliminar')} />        
-                            &nbsp;&nbsp;&nbsp;
-                            <LibraryAddIcon className="iconos" onClick={()=> seleccionarProducto(row, 'Agregar')}></LibraryAddIcon>
+                            </Accordion>
                         </TableCell>
                     </TableRow>
                     </Fragment>
@@ -553,6 +715,18 @@ function PointSale(props){
             open={modalDelete}
             onClose={openCloseModalDelete}>
             {bodyDelete}
+        </Modal>
+
+        <Modal
+            open={modalEditProducto}
+            onClose={openCloseModalEditProducto}>
+            {bodyEditProducto}
+        </Modal>
+
+        <Modal
+            open={modalDeleteProducto}
+            onClose={openCloseModalDeleteProducto}>
+            {bodyDeleteProducto}
         </Modal>
 
         <Modal
