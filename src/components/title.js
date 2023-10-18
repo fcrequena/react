@@ -9,7 +9,6 @@ function MyTitle(props) {
   return (
     <div>
         <br/>
-        
       <Grid container  
         direction="row"
         justifyContent="space-between"
@@ -34,7 +33,7 @@ function MyTitle(props) {
           {buscar ? buscar : ""}
         </Grid>
       </Grid>
-      <hr />
+      <hr style={{border: "1px dashed grey", height: 0, width: "80%"}} />
     </div>
   );
 }

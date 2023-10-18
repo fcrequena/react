@@ -1,12 +1,12 @@
 import {AuthContext } from '../context/authContext'
 import { useContext, useState } from "react";
-import { Alert, Autocomplete, Box, Button, Container, Grid, IconButton, Modal, Snackbar, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from "@mui/material"
+import { Alert, Autocomplete, Button, Container, Grid, IconButton, Modal, Snackbar, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from "@mui/material"
 import * as React from 'react';
 
 import { useMutation } from '@apollo/react-hooks';
 import { REPORT_MONTH, GET_POINT_SALE_USER } from '../gql/mutation';
 import MyTitle from '../components/title';
-import { Delete, Edit } from '@mui/icons-material';
+import { Delete, Download, Edit } from '@mui/icons-material';
 import SpanningTable from '../components/tableDiary';
 import { useNavigate } from 'react-router-dom';
 import SimpleSnackbar from '../components/snackbars';
@@ -108,7 +108,7 @@ function Report(){
             <MyTitle titulo={'Reporte'}></MyTitle>
         : <div></div> }  
         
-            <Grid container direction="row"  spacing={4} align="center" sx={{ borderBottom: "1px solid grey" }}>
+            <Grid container direction="row"  spacing={4} align="center" >
                 { isLoggeIn === true ?
                         <Grid item xs={3}>
                             
@@ -170,9 +170,7 @@ function Report(){
                 : <div></div> }
                 { isLoggeIn === true ?  
                         <Grid item xs={3} >
-                            
                                 <Button variant="contained" onClick={getReport} color="success">Generar</Button>
-                            
                         </Grid>
                 : <div></div> }   
             </Grid>

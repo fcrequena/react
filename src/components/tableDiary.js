@@ -1,4 +1,7 @@
-import * as React from 'react';
+import { Button } from "@mui/material"
+import { Download } from '@mui/icons-material';
+import React, {useRef} from 'react';
+import {useDownloadExcel} from "react-export-table-to-excel";
 
 function ccyFormat(num) {
   return `Q. ${num.toFixed(2)}`;
@@ -121,7 +124,14 @@ export default function SpanningTable(props) {
       })
     }
   }
-//pancho
+
+  const tableRef = useRef(null);
+  const { onDownload } = useDownloadExcel({
+    currentTableRef: tableRef.current,
+    filename: `Reporte ${nombreComunidad}` ,
+    sheet: "Reporte"
+  })
+
   React.useEffect(() => {
     setTipo(datos[0].tipo_producto);
     setFondo(datos[0].fondo);
@@ -130,10 +140,13 @@ export default function SpanningTable(props) {
     funFecha(finicio, ffin);
   },[])
 
-
   return (
       <div>
-      <table 
+        <div>
+          <br/>
+          <Button variant="contained" onClick={onDownload} color="info"> <Download className='iconos'/>Descargar</Button>
+        </div>
+      <table ref={tableRef}
       style={{
               "border-collapse": "collapse", 
               "margin": "25px 50px 50px 50px",
