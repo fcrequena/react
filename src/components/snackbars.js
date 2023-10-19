@@ -22,9 +22,9 @@ export default function SimpleSnackbar(props) {
   return (
     <div>
         <Snackbar
-            anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
             open={open}
-            autoHideDuration={6000}
+            autoHideDuration={5000}
         >
         <Alert 
             onClick={onClose}

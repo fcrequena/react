@@ -84,7 +84,6 @@ function PointSale(props){
         },
         onCompleted: (queryData) =>{
             const productArray = queryData.getAllPointSale;
-            
             setPointSaleData(productArray);
         }
     });
@@ -627,13 +626,13 @@ function PointSale(props){
                     <TableCell>Acciones</TableCell>
                 </TableRow>
                 </TableHead>
-                <TableBody>
+                <TableBody key={"Principal"}>
                 {datosFiltrados
                 .sort((x, y) => x.codigo - y.codigo)
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => (
                     <Fragment key={row.codigo}>
-                    <TableRow>
+                    <TableRow  key={row.codigo+2}>
                         <TableCell>{row.nombre}</TableCell>
                         <TableCell>{row.descripcion}</TableCell>
                         <TableCell>{row.activo == true ? "Activo" : "Inactivo"}</TableCell>
@@ -648,34 +647,34 @@ function PointSale(props){
                             <LibraryAddIcon className="iconos" onClick={()=> seleccionarProducto(row, 'Agregar')}></LibraryAddIcon>
                         </TableCell>
                     </TableRow>
-                    <TableRow>
+                    <TableRow key={row.codigo+1}>
                         <TableCell colSpan={5}><Accordion  color="primary" variant="outlined"
                             expanded={index === expandedRow}
                             onChange={() => handleExpandRow(index)}
                         >
                             <AccordionSummary >Productos asociados</AccordionSummary>
                             <AccordionDetails>
-                                <Table >
+                                <Table key={index}>
                                     <TableHead>
-                                        <TableRow>
+                                        <TableRow key={index+1}>
                                             <TableCell>Nombre</TableCell>
                                             <TableCell>precio</TableCell>
                                             <TableCell>Acciones</TableCell>
                                         </TableRow>
                                     </TableHead>
-                                    <TableBody>
+                                    <TableBody >
                                         {row.productos.map((descripcion, descIndex) => (
-                                            <>
-                                                <TableRow>
-                                                    <TableCell>{descripcion.nombre}</TableCell>
-                                                    <TableCell>{descripcion.precio}</TableCell>
-                                                    <TableCell>
-                                                        <Edit className="iconos" onClick={() => seleccionarProducto(descripcion, 'EditarProducto')} />
-                                                        &nbsp;&nbsp;&nbsp;
-                                                        <Delete className="iconos" onClick={() => seleccionarProducto(descripcion, 'EliminarProducto')} />
-                                                    </TableCell>
-                                                </TableRow>
-                                            </>
+                                            
+                                            <TableRow key={descIndex}>
+                                                <TableCell>{descripcion.nombre}</TableCell>
+                                                <TableCell>{descripcion.precio}</TableCell>
+                                                <TableCell>
+                                                    <Edit className="iconos" onClick={() => seleccionarProducto(descripcion, 'EditarProducto')} />
+                                                    &nbsp;&nbsp;&nbsp;
+                                                    <Delete className="iconos" onClick={() => seleccionarProducto(descripcion, 'EliminarProducto')} />
+                                                </TableCell>
+                                            </TableRow>
+
                                         ))}
                                     </TableBody>
                                 </Table>

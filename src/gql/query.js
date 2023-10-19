@@ -7,7 +7,7 @@ export const GET_ALL_PRODUCT = gql`
 `
 export const GET_ALL_TYPE_PRODUCT = gql`
     query AllTypeProduct{
-        getAllTypeProduct{ codigo nombre descripcion activo}
+        getAllTypeProduct{ codigo nombre descripcion activo orden es_producto}
     }
 `
 export const GET_PRODUCT_BYID = gql`

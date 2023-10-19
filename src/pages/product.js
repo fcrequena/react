@@ -135,6 +135,34 @@ function Product(props){
 
     function funEditProducto()
     {
+        const {nombre, descripcion, tipo_producto} = productoSeleccionado;    
+
+        if(nombre === "" || nombre === undefined){
+            setMostrarSnackBar({
+                mensaje: "Ingrese el nombre del producto.",
+                esError: true,
+                mostrar: true
+            });    
+            return;
+        }
+
+        if(descripcion === "" || descripcion === undefined){
+            setMostrarSnackBar({
+                mensaje: "Ingrese la descripcion del producto.",
+                esError: true,
+                mostrar: true
+            });    
+            return;
+        }
+
+        if(tipo_producto === "" || tipo_producto === undefined){
+            setMostrarSnackBar({
+                mensaje: "Seleccione el tipo de producto.",
+                esError: true,
+                mostrar: true
+            });    
+            return;
+        }
         editProducto();           
     }
 

@@ -77,6 +77,7 @@ function TypeProduct(props){
 
     const {typeLoading, typeError, typeData} = useQuery(GET_ALL_TYPE_PRODUCT,{
         onCompleted: (queryData) =>{
+            console.log(queryData)
             const productArray = queryData.getAllTypeProduct;
             setTypeProductData(productArray);
         }
@@ -380,6 +381,7 @@ function TypeProduct(props){
                             <TableCell>Nombre</TableCell>
                             <TableCell>Descripción</TableCell>
                             <TableCell>Producto / Servicio</TableCell>
+                            <TableCell>Orden</TableCell>
                             <TableCell>Estado</TableCell>
                             <TableCell>Acciones</TableCell>
                         </TableRow>
@@ -393,6 +395,7 @@ function TypeProduct(props){
                                 <TableCell>{console.nombre}</TableCell>
                                 <TableCell>{console.descripcion}</TableCell>
                                 <TableCell>{console.es_producto == true ? "Producto" : "Servicio"}</TableCell>
+                                <TableCell>{console.orden}</TableCell>
                                 <TableCell>{console.activo == true ? "Activo" : "Inactivo"}</TableCell>
                                 <TableCell>
                                     <Edit className="{styles.iconos}" onClick={() => seleccionarProducto(console, 'Editar')} />
