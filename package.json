@@ -49,6 +49,10 @@
       "last 1 safari version"
     ]
   },
+  "engines": {
+    "npm": "10.1.0",
+    "node": "20.8.0"
+  },
   "devDependencies": {
     "@types/node": "^20.7.0"
   }
